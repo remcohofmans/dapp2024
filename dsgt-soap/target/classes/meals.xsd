@@ -1,0 +1,97 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://foodmenu.io/gt/webservice"
+           targetNamespace="http://foodmenu.io/gt/webservice" elementFormDefault="qualified">
+
+    <xs:element name="getMealRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMealResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="meal" type="tns:meal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getLargestMealRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getLargestMealResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="meal" type="tns:meal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCheapestMealRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCheapestMealResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="meal" type="tns:meal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOrderRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="order" type="tns:order"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOrderResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="responseText" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="order">
+        <xs:sequence>
+            <xs:element name="orderNumber" type="xs:long"/>
+            <xs:element name="mealName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="specialInstructions" type="xs:string" minOccurs="0"/>
+            <xs:element name="timestamp" type="xs:string"/>
+            <xs:element name="deliveryAddress" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="meal">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="kcal" type="xs:int"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="mealtype" type="tns:mealtype"/>
+            <xs:element name="price" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:simpleType name="mealtype">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="vegan"/>
+            <xs:enumeration value="veggie"/>
+            <xs:enumeration value="meat"/>
+            <xs:enumeration value="fish"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
