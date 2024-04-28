@@ -2,6 +2,7 @@ body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     background-image: url("images/background_login.jpeg");
     background-size: cover;
+    background-attachment: scroll;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -39,6 +40,7 @@ input {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 300px;
 }
 .button:hover {
     background-color: #c0392b;
