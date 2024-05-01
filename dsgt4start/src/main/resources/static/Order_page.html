@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Alcoholic Drinks Order Page</title>
+    <link rel="stylesheet" href="Order_page.css" />
+    <script>
+        var basket = [];
+        var drinks = [
+            {id: 1, name: 'Beer', price: 5.00},
+            {id: 2, name: 'Wine', price: 10.00},
+            {id: 3, name: 'Whiskey', price: 15.00},
+            // Can be changed easily with server communication
+        ];
+
+        window.onload = function() {
+            var select = document.getElementById("drink");
+            drinks.forEach(function(item) {
+                var option = document.createElement("option");
+                option.text = item.name + " - $" + item.price;
+                option.value = JSON.stringify(item);
+                select.add(option);
+            });
+        };
+
+        function addToBasket() {
+            var select = document.getElementById("drink");
+            var selectedOption = JSON.parse(select.options[select.selectedIndex].value);
+            basket.push(selectedOption);
+            document.getElementById("basket").innerText = "Basket size: " + basket.length + ", Total price: $" + calculateTotal();
+        }
+
+        function calculateTotal() {
+            var total = 0;
+            for (var i = 0; i < basket.length; i++) {
+                total += basket[i].price;
+            }
+            return total.toFixed(2);
+        }
+
+        function checkout() {
+            // Here you would typically send the basket data to your server
+            // Then redirect the user to the checkout page
+            window.location.href = "Checkout_page.html";
+        }
+    </script>
 </head>
 <body>
-
+<h1>Order Your Spirits</h1>
+<form onsubmit="event.preventDefault(); addToBasket();">
+    <label for="drink">Choose your fine spirits here:</label>
+    <select id="drink" name="drink">
+        <!-- Options will be populated by JavaScript -->
+    </select>
+    <br>
+    <input type="submit" value="Add to Basket">
+</form>
+<p id="basket">Basket : 0, Total price: $0.00</p>
+<button onclick="checkout()">Go to Checkout</button>
 </body>
 </html>
