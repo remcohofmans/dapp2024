@@ -18,7 +18,7 @@ body {
 }
 h2 {
     text-align: center;
-    color: #e74c3c;
+    color: #c0392b;
     margin-bottom: 20px;
 }
 form {
@@ -33,7 +33,7 @@ input {
     background-color: #ecf0f1;
 }
 .button {
-    background-color: #e74c3c;
+    background-color: #c0392b;
     color: white;
     padding: 15px;
     border: none;
@@ -43,5 +43,20 @@ input {
     width: 300px;
 }
 .button:hover {
-    background-color: #c0392b;
+    background-color: #e74c3c;
+}
+.site-header {
+    background-color: slategray;
+    color: #c0392b;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%; /* Ensure the header extends full width */
+    position: fixed; /* Fixed position */
+    top: 0; /* Align to the top of the viewport */
+    left: 0; /* Align to the left of the viewport */
+    z-index: 1000; /* Ensure it's above all other content */
+}
+
+body {
+    padding-top: 60px; /* Adjust this value based on the height of your header */
 }
