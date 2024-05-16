@@ -1,0 +1,10 @@
+be/kuleuven/deliveryservice/exceptions/MealNotFoundException.class
+be/kuleuven/deliveryservice/exceptions/MealNotFoundAdvice.class
+be/kuleuven/deliveryservice/DeliveryRestServiceApplication.class
+be/kuleuven/deliveryservice/domain/Deliver.class
+be/kuleuven/deliveryservice/domain/DeliveryStatus.class
+be/kuleuven/deliveryservice/domain/VehicleType.class
+be/kuleuven/deliveryservice/domain/DeliveryRepository.class
+be/kuleuven/deliveryservice/domain/DeliveryPerson.class
+be/kuleuven/deliveryservice/controllers/DeliverRestController.class
+be/kuleuven/deliveryservice/domain/GoogleCloudMapHelper.class

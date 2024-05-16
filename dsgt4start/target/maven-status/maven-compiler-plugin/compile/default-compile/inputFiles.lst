@@ -1,0 +1,11 @@
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/HelloWorldController.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/auth/WebSecurityConfig.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/externalServices/DeliveryService.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/UserMessage.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/ViewController.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/externalServices/DeliveryPerson.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/User.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/externalServices/Deliver.java
+/home/dapp/fp/dsgt4start/src/main/java/be/kuleuven/dsgt4/externalServices/DeliveryStatus.java

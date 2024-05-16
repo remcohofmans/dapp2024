@@ -1,17 +1,21 @@
 package be.kuleuven.dsgt4;
 
 import be.kuleuven.dsgt4.auth.WebSecurityConfig;
+import be.kuleuven.dsgt4.externalServices.DeliveryService;
 import com.google.cloud.firestore.Firestore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+//import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+
+
+//import okhttp3.ResponseBody;
+
 
 // Add the controller.
 @RestController
@@ -23,8 +27,16 @@ class HelloWorldController {
     @GetMapping("/api/hello")
     public String hello() {
         System.out.println("Inside hello");
-        return "hello world!";
+
+        DeliveryService d = new DeliveryService();
+
+        //d.getDeliveryInformationBasedOnID("44");
+
+        return d.getDeliveryInformationBasedOnID("44");
+
+        //return "this hello world!";
     }
+
 
     @GetMapping("/api/whoami")
     public User whoami() throws InterruptedException, ExecutionException {
