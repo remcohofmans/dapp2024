@@ -2,16 +2,16 @@ package be.kuleuven.dsgt4.externalServices;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
+//import net.minidev.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.json.JSONException;
-//import org.json.JSONObject;
+import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.util.Date;
-//import java.text.ParseException;
+import java.text.ParseException;
 
 
 
@@ -64,56 +64,12 @@ public class DeliveryService {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(response);
 
+
             // Access the "_embedded" object
             JsonNode embeddedNode = rootNode.get("_embedded");
 
+
             response = embeddedNode.toString();
-
-
-            try {
-                //JSONObject jsonObject = new JSONObject();
-
-                // Extracting values
-                String address = embeddedNode.get("address").toString();
-                double totalPrice = Double.parseDouble(embeddedNode.get("totalPrice").toString());
-                DeliveryStatus deliveryStatus = DeliveryStatus.valueOf(embeddedNode.get("deliveryStatus").toString());
-                Date deliveryDate = new Date(embeddedNode.get("deliveryDate").toString());
-                String deliveryID = embeddedNode.get("deliveryID").toString();
-
-//                JSONObject deliveryPerson = jsonObject.getJSONObject("deliveryPerson");
-//                String deliveryPersonID = deliveryPerson.getString("id");
-//                String deliveryPersonName = deliveryPerson.getString("name");
-//                String deliveryPersonPhoneNumber = deliveryPerson.getString("phoneNumber");
-//                String deliveryPersonEmail = deliveryPerson.getString("email");
-//                String deliveryPersonVehicleType = deliveryPerson.getString("vehicleType");
-//                JSONArray deliveryDates = deliveryPerson.getJSONArray("deliveryDates");
-//                String firstDeliveryDate = deliveryDates.getString(0);
-
-
-
-                // Printing values
-                System.out.println("Address: " + address);
-                System.out.println("Total Price: " + totalPrice);
-                System.out.println("Delivery Status: " + deliveryStatus);
-                System.out.println("Delivery Date: " + deliveryDate);
-                System.out.println("Delivery ID: " + deliveryID);
-//                System.out.println("Delivery Person ID: " + deliveryPersonID);
-//                System.out.println("Delivery Person Name: " + deliveryPersonName);
-//                System.out.println("Delivery Person Phone Number: " + deliveryPersonPhoneNumber);
-//                System.out.println("Delivery Person Email: " + deliveryPersonEmail);
-//                System.out.println("Delivery Person Vehicle Type: " + deliveryPersonVehicleType);
-//                System.out.println("First Delivery Date: " + firstDeliveryDate);
-//
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-
-
-
-
-
 
             System.out.println(response);
         } catch (WebClientResponseException e) {
@@ -124,11 +80,11 @@ public class DeliveryService {
             e.printStackTrace();
         }
 
+        //System.out.println(response);
+
         return response;
 
     }
-
-
 
 
 }
