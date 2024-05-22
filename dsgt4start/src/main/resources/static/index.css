@@ -60,6 +60,7 @@ header {
     text-align: center;
     padding: 10px 0;
     width: 100%; /* Ensure the header extends full width */
+    height: 80px;
     position: fixed; /* Fixed position */
     top: 0; /* Align to the top of the viewport */
     left: 0; /* Align to the left of the viewport */
