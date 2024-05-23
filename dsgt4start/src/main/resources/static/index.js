@@ -136,6 +136,7 @@ function showAuthenticated(username) {
   document.getElementById("namediv").innerHTML = "Hello " + username;
   document.getElementById("logindiv").style.display = "none";
   document.getElementById("contentdiv").style.display = "block";
+  document.getElementById("contentdiv").className = "content-style";/////
 }
 
 function showUnAuthenticated() {
@@ -144,10 +145,15 @@ function showUnAuthenticated() {
   document.getElementById("password").value = "";
   document.getElementById("logindiv").style.display = "block";
   document.getElementById("contentdiv").style.display = "none";
+  document.getElementById("contentdiv").className = "content-style"; //////
 }
 
 function addContent(text) {
-  document.getElementById("contentdiv").innerHTML += (text + "<br/>");
+  var newElement = document.createElement('div');//////
+  newElement.className = 'content-style'; ///////
+  newElement.innerHTML = text;//////
+  document.getElementById("contentdiv").appendChild(newElement);////
+  //document.getElementById("contentdiv").innerHTML += (text + "<br/>");/////////
 }
 
 // calling /api/hello on the rest service to illustrate text based data retrieval
