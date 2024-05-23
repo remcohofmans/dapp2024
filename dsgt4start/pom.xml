@@ -3,6 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	    <packaging>war</packaging>
+
 	<groupId>be.kuleuven</groupId>
 	<artifactId>dsgt4</artifactId>
 	<version>2.0</version>
@@ -96,7 +97,19 @@
 			<version>4.0.0</version>
 		</dependency>
 
-
+		<!--
+     *************************************************************
+       Self added
+     ************************************************************* -->
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>4.9.3</version>
+		</dependency>
+		<!--
+         *************************************************************
+           Self added
+         ************************************************************* -->
 	</dependencies>
 
 	<build>
@@ -148,7 +161,7 @@
 				<version>2.4.4</version>
 				<configuration>
 					<version>1</version>
-					<projectId>TODO-level-2</projectId>
+					<projectId>vivid-ocean-384914</projectId>
 					<cloudSdkVersion>404.0.0</cloudSdkVersion>
 				</configuration>
 			</plugin>

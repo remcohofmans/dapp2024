@@ -9,8 +9,5 @@
         <module name="dsgt4" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="dsgt4" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>
