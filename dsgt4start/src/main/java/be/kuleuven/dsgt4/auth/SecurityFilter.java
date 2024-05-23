@@ -8,15 +8,26 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+// for level authentication
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.beans.factory.annotation.Autowired;
 
-// for level 1 authentication
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import java.io.ByteArrayInputStream;
+
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import java.security.interfaces.RSAPublicKey;
+import com.fasterxml.jackson.databind.ObjectMapper;
 // till here
 
 
@@ -32,21 +43,58 @@ import java.util.List;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    // added to implement level 1 of the authentication
-    public static String extractIdentityTokenFromRequest(HttpServletRequest request) {
-        // Assuming the identity token is in the "Authorization" header
-        String authorizationHeader = request.getHeader("Authorization");
+    // added to implement the authentication
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            // Extract the token part after "Bearer "
-            return authorizationHeader.substring(7);
+    @Autowired
+    private boolean isProduction; //Must be adjusted
+
+
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // (level 1) decode Identity Token and assign correct email and role (DONE)
+        // TODO: (level 2) verify Identity Token
+        // TODO: STILL NEED TO CHANGE SOME LOGIC HERE
+
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            try {
+                // Separate the "Bearer " from the encoded string and then decode this string
+                String token = authorizationHeader.substring("Bearer ".length());
+                DecodedJWT decodedToken = JWT.decode(token);
+
+                // Get the desired credentials out of the decoded token
+                String email = decodedToken.getClaim("email").asString();
+                String role = decodedToken.getClaim("role").asString();
+
+
+                // Use the acquired credentials to create a new user instance to add to the security context
+                var user = new User(email, role);
+                FirebaseAuthentication fireAuth = new FirebaseAuthentication(user);
+                if(isProduction){ // check if the application is running in production :isProduction
+                    boolean verified = verifyJWT(decodedToken);
+                    if(verified){
+                        //System.out.println("Authentication has been set to true");
+                        fireAuth.setAuthenticated(true);
+                    } else {
+                        //System.out.println("Authentication has been set to false");
+                        fireAuth.setAuthenticated(false);
+                    }
+                } else {
+                    fireAuth.setAuthenticated(true);
+                }
+
+                SecurityContext context = SecurityContextHolder.getContext();
+                context.setAuthentication(fireAuth);
+
+                filterChain.doFilter(request,response);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        } else{
+            //if we have nothing to decode, do nothing
+            filterChain.doFilter(request,response);
         }
-        ///////////////This method should be reviewed (but just to get rid of errors now)
-        // If not found in the header, check other places (e.g., query parameters)
-        // Implement additional logic here based on your specific use case
-
-        // Return null if no identity token found
-        return null;
     }
     public static DecodedJWT decodeIdentityToken(String token) {
         String[] chunks = token.split("\\.");
@@ -64,33 +112,57 @@ public class SecurityFilter extends OncePerRequestFilter {
         return JWT.decode(token);
     }
 
-    //till here
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // TODO: (level 1) decode Identity Token and assign correct email and role
-        // TODO: (level 2) verify Identity Token
-
-        //Implemented for level 1
+    // TODO: Change some logic here:
+    protected boolean verifyJWT(DecodedJWT decodedToken){
         try {
-            String identityToken = extractIdentityTokenFromRequest(request);
-            DecodedJWT decodedJWT = decodeIdentityToken(identityToken);
+            //processing the raw data we received from the google endpoint
+            ObjectMapper objectMapper = new ObjectMapper();
+            var keyData = objectMapper.readTree(getPublicKey());
+            var publicKey = keyData.get(decodedToken.getKeyId()).asText();
+            System.out.println(publicKey);
+            var rawKey = publicKey
+                    .replace("-----BEGIN CERTIFICATE-----", "")
+                    .replace("-----END CERTIFICATE-----", "")
+                    .replace("\n","");
 
-            if (decodedJWT != null) {
-                String userEmail = decodedJWT.getSubject();
-                String userRole = decodedJWT.getClaim("role").asString();
-                //I think this has to go for the next line //var user = new User("test@example.com", "manager");
-                var user = new User(userEmail, userRole);
-                SecurityContext context = SecurityContextHolder.getContext();
-                context.setAuthentication(new FirebaseAuthentication(user));
-            }
-        } catch (Exception e) {
-            // Handle exceptions (e.g., invalid tokens)
-            e.printStackTrace();
+            //turning the raw string of the public key into the RSA256 style format
+            byte keyBytes[] = Base64.getDecoder().decode(rawKey);
+            ByteArrayInputStream inputStream  =  new ByteArrayInputStream(keyBytes);
+            CertificateFactory fact = CertificateFactory.getInstance("X.509");
+            X509Certificate x509KeySpec = (X509Certificate)fact.generateCertificate(inputStream);
+
+            // The algorithm does not require a
+            Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) x509KeySpec.getPublicKey(), null);
+
+            // if the JWT is valid it would return the decoded token, if it is invalid it will throw an exception
+            JWT. require(algorithm)
+                    .build()
+                    .verify(decodedToken);
+
+            System.out.println("JWT verification successful");
+            return true;
+        } catch (Exception e){
+            System.out.println("JWT verification failed: " + e.getMessage());
+            return false;
         }
-
-        filterChain.doFilter(request, response);
     }
-        //
+    public String getPublicKey() {
+        // fetch the public keys from the google endpoint
+        var publicKey = webClientBuilder
+                .baseUrl("https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+                .build()
+                .get()
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        return publicKey;
+    }
+
+
+
+
+    //till here
 
 
     @Override
@@ -101,6 +173,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private static class FirebaseAuthentication implements Authentication {
         private final User user;
+        private boolean Auth;
 
         FirebaseAuthentication(User user) {
             this.user = user;
@@ -132,17 +205,17 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         @Override
         public boolean isAuthenticated() {
-            return true;
+            return Auth;
         }
 
         @Override
         public void setAuthenticated(boolean b) throws IllegalArgumentException {
-
+            Auth = b;
         }
 
         @Override
         public String getName() {
-            return null;
+            return this.user.getEmail();
         }
     }
 }
