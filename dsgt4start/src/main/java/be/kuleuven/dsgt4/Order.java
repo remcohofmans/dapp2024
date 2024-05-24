@@ -1,55 +1,84 @@
 package be.kuleuven.dsgt4;
 
-import org.threeten.bp.LocalDateTime;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 public class Order {
-    private UUID id;
+    private UUID orderNumber;
     private LocalDateTime localDateTime;
-    private List<Beverage> beveragelist;
-    private String customer;
+    private List<Liquor> beveragelist;
+    private UUID customerId;
+    //private List<LiquorShop> liquorShops;
+    private String deliveryAddress;
 
-    public Order(UUID id, LocalDateTime localDateTime, List<Beverage> beverageList, String customer){
-        this.id = id;
-        this.localDateTime = localDateTime;
+    public Order(List<Liquor> beverageList, String specialInstruction, String deliveryAddress) {
+        this.orderNumber = UUID.randomUUID();///////////////////
         this.beveragelist = beverageList;
-        this.customer = customer;
+        this.customerId = UUID.randomUUID();
+        this.localDateTime = LocalDateTime.now();
+        //this.liquorShops = liquorShops;
+        this.deliveryAddress = deliveryAddress;
+
     }
 
-    public UUID getId(){
-        return this.id;
+    public UUID getOrderNumber() {
+        return this.orderNumber;
     }
 
-    public HashMap<String, Object > getAsMap(){
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("id", id.toString());
-        map.put("time", localDateTime.toString());
-        LinkedList<HashMap<String, String>> list = new LinkedList<HashMap<String, String>>();
-        for (Beverage beverage : beveragelist){
-            list.add(beverage.getAsMap());
-        }
-        map.put("beverages", list);
-        map.put("customer", customer);
-        return map;
-    }
-
-    public LocalDateTime getTime(){
+    public LocalDateTime getTime() {
         return this.localDateTime;
     }
 
-    public List<Beverage> getBeverages(){
+    public List<Liquor> getBeverages() {
         return this.beveragelist;
     }
 
-    public void setBeveragelist(List<Beverage> beveragelist){
+    public UUID getCustomer() {
+        return this.customerId;
+    }
+
+    public String getDeliveryAddress() {return this.deliveryAddress;}
+    public void addBeverage(Liquor beverage) {
+        this.beveragelist.add(beverage);
+    }
+
+    public void setBeveragelist(List<Liquor> beveragelist) {
         this.beveragelist = beveragelist;
     }
 
-    public String getCustomer(){
-        return this.customer;
+    public HashMap<String, Object> getAsMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("orderNumber", orderNumber.toString());
+        map.put("time", localDateTime.toString());
+
+        List<Map<String, String>> beverageMaps = beveragelist.stream()
+                .map(Liquor::getAsMap)
+                .collect(Collectors.toList());
+        map.put("Liquors", beverageMaps);
+        map.put("customerId", customerId.toString());
+
+//        List<String> liquorShopNames = liquorShops.stream()
+//                .map(LiquorShop::toString)
+//                .collect(Collectors.toList());
+//        map.put("liquorShops", liquorShopNames);
+
+        return map;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderNumber +
+                ", localDateTime=" + localDateTime +
+                ", liquorList=" + beveragelist +
+                ", customerId=" + customerId +
+                //", liquorShops=" + liquorShops +
+                '}';
     }
 }
