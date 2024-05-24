@@ -1,6 +1,4 @@
-May 24, 2024 11:10:42 AM io.netty.util.internal.MacAddressUtil defaultMachineId
-WARNING: Failed to find a usable hardware address from the network interfaces; using random bytes: ff:c1:b0:d3:de:b5:5e:45
-May 24, 2024 11:10:42 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+May 24, 2024 11:51:31 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
 INFO: Started WebSocket server on ws://0.0.0.0:9150
 API endpoint: http://0.0.0.0:8084
 If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
@@ -14,5 +12,7 @@ If you are running a Firestore in Datastore Mode project, run:
 Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
 Dev App Server is now running.
 
-May 24, 2024 11:11:09 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
+May 24, 2024 11:51:55 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler initChannel
 INFO: Connected to new websocket client
+May 24, 2024 11:54:21 AM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketChannelHandler channelClosed
+INFO: Websocket client disconnected
