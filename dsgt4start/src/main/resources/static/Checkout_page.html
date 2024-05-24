@@ -21,7 +21,6 @@
       document.getElementById("basket").innerText = "Basket: " + basket.map(item => item.name).join(", ");
       document.getElementById("total").innerText = "Total: $" + calculateTotal();
     };
-
     function pay() {
       alert("Payment submitted!");
       window.location.href = "Confirmation_page.html";

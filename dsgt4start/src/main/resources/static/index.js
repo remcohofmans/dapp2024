@@ -1,106 +1,172 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
+import {
+  getAuth,
+  connectAuthEmulator,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
 
-import { h, Component, render } from "https://esm.sh/preact@10.11.2";
-import htm from "https://esm.sh/htm@3.1.1";
-
-// Import router library
-import { createHashRouter } from "https://esm.sh/preact-router@4.1.0";
-
-// Import state management functions
-import { getQuotes, setQuotes, getIsManager, setIsManager, getAuth, setAuth } from "./state.js";
-
-// Bind htm to h
-const html = htm.bind(h);
-
-// Import components
-import { Login } from "./login.js";
-import { Header } from "./header.js";
-import { Manager } from "./manager.js";
-import { Cart } from "./cart.js";
-import { Beverages } from "./beverages.js";
-import { BeveragePrices } from "./beveragePrices.js";
-import { Account } from "./account.js";
-
-// Check for Firebase configuration
-if (process.env.NODE_ENV === 'production' && !firebaseConfig) {
-  throw new Error('Firebase configuration is missing for production environment');
+// Setup authentication and wire up events
+setupAuth();
+if (document.getElementById("btnSignIn")) {
+  wireGuiUpEvents();
 }
+wireUpAuthChange();
 
-// Initialize authentication and manager state
-let auth = {};
-setIsManager(false);
-
-// Router configuration
-const router = createHashRouter();
-
-// Root component
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      currentUser: null,
+// Setup authentication with local or cloud configuration
+function setupAuth() {
+  let firebaseConfig;
+  if (location.hostname === "localhost") {
+    firebaseConfig = {
+      apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
+      projectId: "demo-distributed-systems-kul",
+    };
+  } else {
+    firebaseConfig = {
+      // TODO: for level 2, paste your config here
     };
   }
 
-  componentDidMount() {
-    // Check for existing authentication on mount
-    getAuth().onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      setIsManager(user?.claims?.manager || false);
-      setAuth(user);
-    });
-  }
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  try {
+    auth.signOut();
+  } catch (err) { }
 
-  render() {
-    return html`
-      <div>
-        ${this.state.currentUser ? (
-          html`
-            <Header />
-            ${router(
-              [
-                // Public routes
-                ("/", () => html`<${Login} />`),
-
-                // Protected routes (require authentication)
-                (
-                  "/manager",
-                  () => (getIsManager() ? html`<${Manager} />` : html`Not authorized`),
-                  []
-                ),
-                (
-                  "/cart",
-                  () => html`<${Cart} />`,
-                  []
-                ),
-                (
-                  "/account",
-                  () => html`<${Account} />`,
-                  []
-                ),
-
-                // Beverage routes
-
-                ("/beverages/:distributor/:beverageId", () => html`<${Beverages} />`),
-                (
-                  "/beverages/:distributor/:beverageId/:priceId",
-                  () => html`<${BeveragePrices} />`,
-                  []
-                ),
-
-                // Catch-all route
-                ("*", () => html`<h1>404 Not Found</h1>`),
-              ],
-              { initialUrl: "/" }
-            )}
-          `
-        ) : (
-          html`
-            <${Login} />
-          `
-        )}
-      </div>
-    `;
+  if (location.hostname === "localhost") {
+    connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
   }
 }
 
-render(html`<${App} />`, document.body);
+function wireGuiUpEvents() {
+  var email = document.getElementById("email");
+  var password = document.getElementById("password");
+  var signInButton = document.getElementById("btnSignIn");
+  var signUpButton = document.getElementById("btnSignUp");
+  var logoutButton = document.getElementById("btnLogout");
+
+  signInButton.addEventListener("click", function () {
+    signInWithEmailAndPassword(getAuth(), email.value, password.value)
+      .then(function () {
+        console.log("signed in");
+        window.location.href = 'Order_page.html'; //
+      })
+      .catch(function (error) {
+        console.log("error signInWithEmailAndPassword:", error.message);
+        alert(error.message);
+      });
+  });
+
+  signUpButton.addEventListener("click", function () {
+    createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+      .then(function () {
+        console.log("account created");
+      })
+      .catch(function (error) {
+        console.log("error createUserWithEmailAndPassword:", error.message);
+        alert(error.message);
+      });
+  });
+
+  logoutButton.addEventListener("click", function () {
+    try {
+      var auth = getAuth();
+      auth.signOut();
+    } catch (err) { }
+  });
+}
+
+function wireUpAuthChange() {
+  var auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    console.log("onAuthStateChanged");
+    if (!user) {
+      console.log("user is null");
+      if (document.getElementById("logindiv")) {
+        showUnAuthenticated();
+      }
+      return;
+    }
+    if (!auth) {
+      console.log("auth is null");
+      if (document.getElementById("logindiv")) {
+        showUnAuthenticated();
+      }
+      return;
+    }
+    if (!auth.currentUser) {
+      console.log("currentUser is undefined or null");
+      if (document.getElementById("logindiv")) {
+        showUnAuthenticated();
+      }
+      return;
+    }
+
+    auth.currentUser.getIdTokenResult().then((idTokenResult) => {
+      console.log("Hello " + auth.currentUser.email);
+      if (document.getElementById("logindiv")) {
+        showAuthenticated(auth.currentUser.email);
+      }
+
+      console.log("Token: " + idTokenResult.token);
+      if (document.getElementById("contentdiv")) {
+        fetchData(idTokenResult.token);
+      }
+    });
+  });
+}
+
+function fetchData(token) {
+  getHello(token);
+  whoami(token);
+}
+
+function showAuthenticated(username) {
+  document.getElementById("namediv").innerHTML = "Hello " + username;
+  document.getElementById("logindiv").style.display = "none";
+  document.getElementById("contentdiv").style.display = "block";
+}
+
+function showUnAuthenticated() {
+  document.getElementById("namediv").innerHTML = "";
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("logindiv").style.display = "block";
+  document.getElementById("contentdiv").style.display = "none";
+}
+
+function addContent(text) {
+  var newElement = document.createElement('div');
+  newElement.className = 'content-style';
+  newElement.innerHTML = text;
+  document.getElementById("contentdiv").appendChild(newElement);
+}
+
+function getHello(token) {
+  fetch('/api/hello', {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+      addContent(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function whoami(token) {
+  fetch('/api/whoami', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data.email + data.role);
+      addContent("Whoami at rest service: " + data.email + " - " + data.role);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
