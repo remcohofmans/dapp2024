@@ -19,13 +19,37 @@ window.onload = function() {
 };
 
 function fetchDrinks() {
-    return fetch('https://example.com/api/drinks') // Replace 'https://example.com/api/drinks' with your API endpoint
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        });
+    return fetch('http://your-server-address/ws', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/xml'
+        },
+        body: `
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://liquormenu.io/gt/webservice">
+               <soapenv:Header/>
+               <soapenv:Body>
+                  <web:getLiquorsRequest/>
+               </soapenv:Body>
+            </soapenv:Envelope>
+        `
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(data => {
+        const drinks = [];
+        const items = data.getElementsByTagName('Liquor');
+        for (let i = 0; i < items.length; i++) {
+            const name = items[i].getElementsByTagName('name')[0].textContent;
+            const price = parseFloat(items[i].getElementsByTagName('price')[0].textContent);
+            drinks.push({ name, price });
+        }
+        return drinks;
+    });
 }
 
 function addToBasket() {
@@ -44,7 +68,6 @@ function calculateTotal() {
 }
 
 function checkout() {
-    // Here you would typically send the basket data to your server
-    // Then redirect the user to the checkout page
+    //Implement the check for availability
     window.location.href = "Checkout_page.html";
 }

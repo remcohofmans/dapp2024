@@ -1,1 +1,7 @@
 Web / API server started at 0.0.0.0:8081
+
+  #  node[10482]: void node::ResetStdio() at ../src/node.cc:753
+  #  Assertion failed: !(err != 0) || (err == -1 && (*__errno_location ()) == 1)
+
+----- Native stack trace -----
+

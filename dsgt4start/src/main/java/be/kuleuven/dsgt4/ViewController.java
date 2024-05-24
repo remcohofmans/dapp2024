@@ -8,7 +8,9 @@ public class ViewController {
 
     @GetMapping({"/"})
     public String spa() {
+
         return "forward:/index.html";
+        //return "forward:/";
     }
 
     @GetMapping("/_ah/warmup")
