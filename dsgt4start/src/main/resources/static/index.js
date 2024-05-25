@@ -358,9 +358,32 @@ function whoami(token) {
       .then((data) => {
         console.log(data.email + data.role);
         addContent("Whoami at rest service: " + data.email + " - " + data.role);
+        const newButton = document.createElement('button');
 
+
+        newButton.textContent = 'Change Layout';
+        newButton.onclick = changeLayout;
+        document.body.appendChild(newButton);
       })
       .catch(function (error) {
         console.log(error);
       });
+}
+
+function changeLayout() {
+  // Change the main style sheet
+  const linkElement = document.getElementById('index.css');
+  linkElement.href = 'Checkout.css';
+
+  // Remove the old button
+  const oldButton = document.querySelector('button');
+  oldButton.parentNode.removeChild(oldButton);
+
+  // Create a new element for the updated layout
+  const newLayout = document.createElement('div');
+  newLayout.innerHTML = '<h2>New Layout</h2><p>This is the new layout.</p>';
+
+  // Append the new layout to the body
+  document.body.appendChild(newLayout);
+
 }
