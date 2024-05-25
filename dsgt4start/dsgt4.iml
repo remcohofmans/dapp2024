@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
   <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../delivery-rest">
+      <sourceFolder url="file://$MODULE_DIR$/../delivery-rest/src/main/java" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../dsgt-soap-liquor">
       <sourceFolder url="file://$MODULE_DIR$/../dsgt-soap-liquor/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../dsgt-soap-liquor/target/generated-sources/jaxb" isTestSource="false" />
