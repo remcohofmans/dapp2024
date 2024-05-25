@@ -6,42 +6,37 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Liquor implements Comparable<Liquor> {
-    private String liquorShop;
-    private UUID beverageId;
+    private UUID liquorId;
     private int price;
-    private String beverageName;
+    private String liquorName;
 
     public Liquor() {}
 
-    public Liquor(String liquorShop, UUID beverageId, int price, String beverageName) {
-        this.liquorShop = liquorShop;
-        this.beverageId = beverageId;
+    public Liquor(UUID liquorId, int price, String liquorName) {
+
+        this.liquorId = liquorId;
         this.price = price;
-        this.beverageName = beverageName;
+        this.liquorName = liquorName;
     }
 
-    public String getLiquorShop() {
-        return this.liquorShop;
-    }
 
     public int getPrice() {
         return this.price;
     }
 
-    public UUID getBeverageId() {
-        return this.beverageId;
+    public UUID getLiquorId() {
+        return this.liquorId;
     }
 
-    public String getBeverageName() {
-        return this.beverageName;
+    public String getLiquorName() {
+        return this.liquorName;
     }
 
     public Map<String, String> getAsMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("liquorShop", liquorShop);
-        map.put("beverageId", beverageId.toString());
+        map.put("liquorId", liquorId.toString());
         map.put("price", Integer.toString(price));
-        map.put("beverageName", beverageName);
+        map.put("liquorName", liquorName);
         return map;
     }
 
@@ -51,16 +46,15 @@ public class Liquor implements Comparable<Liquor> {
             return false;
         }
         var other = (Liquor) o;
-        return (this.beverageName.equals(other.beverageName)
-                && this.beverageId.equals(other.beverageId)
-                && (this.price == other.price)
-                && this.liquorShop.equals(other.liquorShop));
+        return (this.liquorName.equals(other.liquorName)
+                && this.liquorId.equals(other.liquorId)
+                && (this.price == other.price));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(liquorShop, beverageId, price, beverageName);
-    }
+    //@Override
+    //public int hashCode() {
+        //return Objects.hash(liquorShop, beverageId, price, beverageName);
+    //}
 
     @Override
     public int compareTo(Liquor o) {
@@ -70,10 +64,9 @@ public class Liquor implements Comparable<Liquor> {
     @Override
     public String toString() {
         return "Beverage{" +
-                "liquorShop='" + liquorShop + '\'' +
-                ", beverageId=" + beverageId +
+                ", liquorId=" + liquorId +
                 ", price=" + price +
-                ", beverageName='" + beverageName + '\'' +
+                ", liquorName='" + liquorName + '\'' +
                 '}';
     }
 }

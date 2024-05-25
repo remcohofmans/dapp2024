@@ -7,21 +7,45 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
-public abstract class LiquorShop {
+public class LiquorShop {
     protected WebClient.Builder webClientBuilder;
     protected String apiKey;
     protected String liquorShopId;
     protected String location;
-    //protected List<Beverage> beverages = new ArrayList<>();
-
-    protected Map<Liquor, Integer> beverageMap = new HashMap<>();
-
-    public Map<Liquor, Integer> getBeverages(){return this.beverageMap;};
-
-    public String getLiquorShopId(){return this.liquorShopId;};
-
-    public String getLocation(){return this.location;};
+    protected List<Liquor> liquors = new ArrayList<>();
+    protected Map<Liquor, Integer> availableLiquors = new HashMap<>();
 
 
+    public String getLiquorShopId(){return this.liquorShopId;}
+    public String getLocation(){return this.location;}
+    public List<Liquor> getLiquors(){return this.liquors;}
 
+    public Map<Liquor, Integer> getAvailableLiquors() {
+        return availableLiquors;
+    }
+
+    public void deleteLiquorFromStore(Liquor liquor){
+      for (int i = 0; i < liquors.size(); i++)
+      {
+          if (liquor.getLiquorId().equals(liquors.get(i).getLiquorId())){
+              liquors.remove(i);
+          }
+      }
+    }
+
+    public boolean decrementAmountOfLiquor(Liquor liquor) {
+        if (availableLiquors.containsKey(liquor)) {
+            int currentAmount = availableLiquors.get(liquor);
+            if (currentAmount > 0) {
+                availableLiquors.put(liquor, currentAmount - 1);
+                return true;
+            } else {
+                System.out.println("The amount of " + liquor.getLiquorName() + " is already zero.");
+                return false;
+            }
+        } else {
+            System.out.println("Liquor not found.");
+            return false;
+        }
+    }
 }

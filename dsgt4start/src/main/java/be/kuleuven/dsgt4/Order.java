@@ -10,58 +10,56 @@ import java.util.stream.Collectors;
 
 
 public class Order {
-    private UUID orderNumber;
-    private LocalDateTime localDateTime;
-    private List<Liquor> beveragelist;
-    private UUID customerId;
-    //private List<LiquorShop> liquorShops;
+    private List<Liquor> orderedLiquors = new LinkedList<>();
+    private List<Delivery> deliveries = new LinkedList<>();
+    private User user;
+    private UUID orderId;
     private String deliveryAddress;
+    private double totalPrice;
+    private LocalDateTime orderTime;
 
     public Order(List<Liquor> beverageList, String specialInstruction, String deliveryAddress) {
-        this.orderNumber = UUID.randomUUID();///////////////////
-        this.beveragelist = beverageList;
-        this.customerId = UUID.randomUUID();
-        this.localDateTime = LocalDateTime.now();
+        this.orderId = UUID.randomUUID();///////////////////
+        this.orderedLiquors = beverageList;
+        setTotalPrice();
+        //this.user = UUID.randomUUID();
+        this.orderTime = LocalDateTime.now();
         //this.liquorShops = liquorShops;
         this.deliveryAddress = deliveryAddress;
 
     }
 
-    public UUID getOrderNumber() {
-        return this.orderNumber;
-    }
+   public double getTotalPrice() {return totalPrice;}
+   public void setTotalPrice() {
+       for (Liquor orderedLiquor : orderedLiquors) {
+           totalPrice = totalPrice + orderedLiquor.getPrice();
+       }
+   }
 
-    public LocalDateTime getTime() {
-        return this.localDateTime;
+    public List<Delivery> getDeliveries() {
+        return deliveries;
     }
+    public List<Liquor> getOrderedLiquors() {return orderedLiquors;}
 
-    public List<Liquor> getBeverages() {
-        return this.beveragelist;
+    public UUID getOrderId() {
+        return orderId;
     }
+    public String getDeliveryAddress() {return deliveryAddress;}
 
-    public UUID getCustomer() {
-        return this.customerId;
-    }
-
-    public String getDeliveryAddress() {return this.deliveryAddress;}
-    public void addBeverage(Liquor beverage) {
-        this.beveragelist.add(beverage);
-    }
-
-    public void setBeveragelist(List<Liquor> beveragelist) {
-        this.beveragelist = beveragelist;
+    public User getUser() {
+        return user;
     }
 
     public HashMap<String, Object> getAsMap() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("orderNumber", orderNumber.toString());
-        map.put("time", localDateTime.toString());
+        map.put("orderNumber", orderId.toString());
+        map.put("time", orderTime.toString());
 
-        List<Map<String, String>> beverageMaps = beveragelist.stream()
+        List<Map<String, String>> beverageMaps = orderedLiquors.stream()
                 .map(Liquor::getAsMap)
                 .collect(Collectors.toList());
         map.put("Liquors", beverageMaps);
-        map.put("customerId", customerId.toString());
+        map.put("user", user.getEmail());
 
 //        List<String> liquorShopNames = liquorShops.stream()
 //                .map(LiquorShop::toString)
@@ -74,10 +72,10 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "orderId=" + orderNumber +
-                ", localDateTime=" + localDateTime +
-                ", liquorList=" + beveragelist +
-                ", customerId=" + customerId +
+                "orderId=" + orderId +
+                ", localDateTime=" + orderTime +
+                ", liquorList=" + orderedLiquors +
+                ", user=" + user.getEmail() +
                 //", liquorShops=" + liquorShops +
                 '}';
     }

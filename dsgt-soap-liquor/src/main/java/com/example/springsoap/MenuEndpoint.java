@@ -22,7 +22,6 @@ public class MenuEndpoint {
         this.liquorRepo = liquorRepo;
     }
 
-
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getLiquorRequest")
     @ResponsePayload
     public GetLiquorResponse getLiquor(@RequestPayload GetLiquorRequest request) {
@@ -69,7 +68,6 @@ public class MenuEndpoint {
 
         return response;
     }
-
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getLiquorCardRequest")
     @ResponsePayload
     public GetLiquorCardResponse getMenu(@RequestPayload GetLiquorCardRequest request) {
@@ -78,5 +76,4 @@ public class MenuEndpoint {
         response.getLiquor().addAll(liquors);
         return response;
     }
-
 }
