@@ -1,30 +1,38 @@
 body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    background-image: url("images/driving_van.jpeg");
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0 url("../images/background_login.jpeg");
+    background-repeat: no-repeat;
     background-size: cover;
     background-attachment: scroll;
+    /* new */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 1024px;
-    margin: 0;
+    height: 100vh;
+
 }
-.login-container {
+
+.signup-container {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 300px;
 }
+
 h2 {
     text-align: center;
     color: #c0392b;
     margin-bottom: 20px;
 }
+
 form {
     display: flex;
     flex-direction: column;
 }
+
 input {
     padding: 15px;
     margin-bottom: 15px;
@@ -32,7 +40,8 @@ input {
     border-radius: 4px;
     background-color: #ecf0f1;
 }
-.button {
+
+button {
     background-color: #c0392b;
     color: white;
     padding: 15px;
@@ -42,9 +51,11 @@ input {
     transition: background-color 0.3s ease;
     width: 300px;
 }
-.button:hover {
+
+button:hover {
     background-color: #e74c3c;
 }
+
 .site-header {
     background-color: slategray;
     color: #c0392b;

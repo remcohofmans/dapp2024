@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f0f0f0 url("images/background_login.jpeg");
+    background: #f0f0f0 url("../images/background_login.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: scroll;

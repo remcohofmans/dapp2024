@@ -1,3 +1,4 @@
+/*
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     background-image: url("images/driving_van.jpeg");
@@ -9,7 +10,7 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    padding-top: 80px; /* Adjust this value based on the height of your header */
+    padding-top: 80px;
 }
 
 header {
@@ -23,8 +24,8 @@ header {
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: center; /* Center the header-menu */
-    align-items: center; /* Center items vertically */
+    justify-content: center;
+    align-items: center;
 }
 
 .header-menu {
@@ -32,8 +33,8 @@ header {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px; /* Optional: Set a max-width for larger screens */
-    padding: 0 20px; /* Optional: Padding to add spacing on sides */
+    max-width: 1200px;
+    padding: 0 20px;
 }
 
 .header-title {
@@ -82,7 +83,7 @@ header {
     border: 2px solid #3498db;
     border-radius: 4px;
     background-color: #ecf0f1;
-    box-sizing: border-box; /* Ensure padding and border are included in width */
+    box-sizing: border-box;
 }
 
 .login-button {
@@ -97,7 +98,7 @@ header {
     margin-bottom: 10px;
     text-align: center;
     border: none;
-    box-sizing: border-box; /* Ensure padding and border are included in width */
+    box-sizing: border-box;
 }
 
 .login-button:hover {
@@ -114,11 +115,156 @@ header {
 .content-style {
     font-family: Arial, sans-serif;
     color: #333;
-    /* Add more styles as needed */
+
 }
 
 @media (max-width: 600px) {
     #logindiv {
         width: 90%;
     }
+}
+*/
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-image: url("images/driving_van.jpeg");
+    background-size: cover;
+    background-attachment: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    padding-top: 80px;
+}
+
+header {
+    background-color: slategray;
+    color: #fff;
+    padding: 10px 0;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+}
+
+.header-title h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #c0392b;
+}
+
+.header-name, .header-icon {
+    flex-shrink: 0;
+}
+
+.header-icon {
+    background: none;
+    color: #e74c3c;
+    border: none;
+    cursor: pointer;
+}
+
+#logindiv {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+.textfield {
+    margin-bottom: 20px;
+}
+
+.textfield label {
+    display: block;
+    color: #c0392b;
+    margin-bottom: 5px;
+}
+
+.textfield input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3498db;
+    border-radius: 4px;
+    background-color: #ecf0f1;
+    box-sizing: border-box;
+}
+
+.login-button {
+    width: 100%;
+    line-height: 40px;
+    background-color: #c0392b;
+    color: white;
+    height: 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    text-align: center;
+    border: none;
+    box-sizing: border-box;
+}
+
+.login-button:hover {
+    background-color: #e74c3c;
+}
+
+.page {
+    display: none;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#buttonsContainer {
+    margin-top: 20px;
+}
+
+#buttonsContainer button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#buttonsContainer button:hover {
+    background-color: #2980b9;
+}
+
+/* New layout styles */
+.new-layout {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.new-layout header {
+    background-color: #333;
+    color: #fff;
 }
