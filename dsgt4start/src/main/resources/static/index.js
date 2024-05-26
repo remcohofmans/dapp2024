@@ -178,8 +178,6 @@ function whoami(token) {
 */
 //////////////////////////////////////::
 
-
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
 import {
   getAuth,
@@ -222,7 +220,7 @@ function setupEventHandlers() {
     signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
         .then(() => {
           console.log("Signed in successfully");
-          displayNewPage();
+          displayOrderPage();
         })
         .catch(error => {
           console.error("Error signing in:", error.message);
@@ -309,14 +307,14 @@ function fetchWhoAmI(token) {
       .catch(error => console.error("Error fetching /api/whoami:", error));
 }
 
-function displayNewPage() {
+function displayOrderPage() {
   // Clear the existing content
   document.body.innerHTML = '';
 
   // Load new CSS file
   const newStylesheet = document.createElement('link');
   newStylesheet.rel = 'stylesheet';
-  newStylesheet.href = '../cssFiles/Order_page.css'; // Path to the new CSS file
+  newStylesheet.href = '../cssFiles/Order_page.css';
   document.head.appendChild(newStylesheet);
 
   // Create new content
@@ -333,20 +331,140 @@ function displayNewPage() {
     <form onsubmit="event.preventDefault(); addToBasket();">
       <label for="drink">Choose your fine spirits here:</label>
       <select id="drink" name="drink">
-        <!-- Options will be populated by JavaScript -->
+        
       </select>
       <br>
       <input type="submit" value="Add to Basket">
     </form>
     <p id="basket">Basket : 0, Total price: $0.00</p>
-    <button onclick="checkout()">Go to Checkout</button>
+    
   `;
   document.body.appendChild(newContent);
+  // I still need to add the add to basket function!!!!
+  const checkoutButton = document.createElement('button');
+  checkoutButton.id = 'btnCheckout';
+  checkoutButton.innerText = 'Go to checkout';
+  document.body.appendChild(checkoutButton);
 
-  // Load the external JavaScript file
-  const script = document.createElement('script');
-  script.src = '../oldJavaScriptFiles/Order_page.js';
-  document.body.appendChild(script);
+  checkoutButton.addEventListener('click', () => {
+    displayCheckoutPage();
+  });
+
+  // Re-setup the logout button event handler
+  const logoutButton = document.createElement('button');
+  logoutButton.id = 'btnLogout';
+  logoutButton.innerText = 'Logout';
+  document.body.appendChild(logoutButton);
+
+  logoutButton.addEventListener('click', () => {
+    getAuth().signOut().catch(err => console.error('Error signing out:', err));
+    location.reload(); // Refresh the page to show the login form again
+  });
+}
+
+function displayCheckoutPage() {
+  // Clear the existing content
+  document.body.innerHTML = '';
+  // Load new CSS file
+  const newStylesheet = document.createElement('link');
+  newStylesheet.rel = 'stylesheet';
+  newStylesheet.href = '../cssFiles/Checkout_page.css';
+  document.head.appendChild(newStylesheet);
+
+
+// Create new content
+  const newHeader = document.createElement('header');
+  newHeader.className = 'site-header';
+  newHeader.innerHTML = `
+    <h1>Bam <u>Booz</u>led</h1>
+  `;
+  document.body.appendChild(newHeader);
+
+  const checkoutContent = document.createElement('div');
+  checkoutContent.innerHTML = `
+    <h1>Checkout</h1>
+    <p id="basket"></p>
+    <p id="total"></p>
+    <form onsubmit="event.preventDefault(); pay();">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber">
+            <br>
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="text" id="expiryDate" name="expiryDate">
+            <br>
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" name="cvv">
+        
+    </form>
+  `;
+  document.body.appendChild(checkoutContent);
+  // I still need to add the add to basket function!!!!
+  const confirmationButton = document.createElement('button');
+  confirmationButton.id = 'btnCheckout';
+  confirmationButton.innerText = 'Pay';
+  document.body.appendChild(confirmationButton);
+  confirmationButton.addEventListener('click', () => {
+    ///////PAYMENT CHECK / ORDERING INFO NEEDS TO BE SENT (PAYMENT FUNCTION STILL NEEDS TO BE INTEGRATED)!!!!
+    displayConfirmationPage();
+  });
+
+  // Re-setup the logout button event handler
+  const logoutButton = document.createElement('button');
+  logoutButton.id = 'btnLogout';
+  logoutButton.innerText = 'Logout';
+  document.body.appendChild(logoutButton);
+
+  logoutButton.addEventListener('click', () => {
+    getAuth().signOut().catch(err => console.error('Error signing out:', err));
+    location.reload(); // Refresh the page to show the login form again
+  });
+}
+
+
+
+function displayConfirmationPage(){
+  // Clear the existing content
+  document.body.innerHTML = '';
+  // Load new CSS file
+  const confirmationStyleSheet = document.createElement('link');
+  confirmationStyleSheet.rel = 'stylesheet';
+  confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
+  document.head.appendChild(confirmationStyleSheet);
+
+
+  // Create new content
+  const confirmationContent = document.createElement('div');
+  confirmationContent.innerHTML = `
+    <header class="site-header">
+      <h1>Bam <u>Booz</u>led</h1>
+    </header>
+    <div class="confirmation-container">
+      <div class="checkmark">✓</div>
+      <div class="message">
+        <p>Your delivery is being processed, and you will get a confirmation mail shortly.</p>
+      </div>
+      <div class="details">
+        <h3>Delivery details</h3>
+        <p id="orderNumber">Your order number:</p>
+        <p id="beer">Beer:</p>
+        <p id="wine">Wine:</p>
+        <p id="whiskey">Whiskey:</p>
+        <p id="totalPrice">Total price:</p>
+      </div>
+      <div class="details">
+        <h3>Delivery info</h3>
+        <p id="expectedDeliveryDate">Expected delivery date:</p>
+        <p id="deliveredBy">Delivered by:</p>
+        <p id="contactDetail">Contact Detail:</p>
+        <p id="phoneNumber">PhoneNumber :</p>
+        <p id="email">Email :</p>
+      </div>
+      <div class="options">
+        <a href="mailto:koenraad.goddefroy@hotmail.com">Cancel order</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(confirmationContent);
 
   // Re-setup the logout button event handler
   const logoutButton = document.createElement('button');
