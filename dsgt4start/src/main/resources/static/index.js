@@ -226,7 +226,7 @@ function displayCheckoutPage() {
   `;
   document.body.appendChild(checkoutContent);
   // I still need to add the add to basket function!!!!
-  checkEndpoint('http://dapp.uksouth.cloudapp.azure.com:12000/ws/wines.wsdl');
+
   const confirmationButton = document.createElement('button');
   confirmationButton.id = 'btnCheckout';
   confirmationButton.innerText = 'Pay';
@@ -377,19 +377,15 @@ async function callGetWineCardService() {
   }
 }
 
- */
-/*
 async function checkEndpoint(url) {
   try {
     const response = await axios.get(url);
     if (response.status === 200) {
-      //
       const confirmationButton = document.createElement('button');
       confirmationButton.id = 'btnCheckout';
       confirmationButton.innerText = '1';
       document.body.appendChild(confirmationButton);
       console.log("Endpoint is reachable:", url);
-      //
     } else {
       const confirmationButton = document.createElement('button');
       confirmationButton.id = 'btnCheckout';
