@@ -15,6 +15,11 @@ public class LiquorShop {
     protected List<Liquor> liquors = new ArrayList<>();
     protected Map<Liquor, Integer> availableLiquors = new HashMap<>();
 
+    public LiquorShop(String liquorShopId, String location, List<Liquor> liquors){
+        this.liquorShopId = liquorShopId;
+        this.location = location;
+        this.liquors = liquors;
+    }
 
     public String getLiquorShopId(){return this.liquorShopId;}
     public String getLocation(){return this.location;}
