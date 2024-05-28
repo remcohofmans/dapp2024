@@ -8,11 +8,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-
+import com.example.soapclient.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+//
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+//
 @RestController
 public class ExternalDeliveryController {
 
@@ -21,9 +40,12 @@ public class ExternalDeliveryController {
 
     private final WebClient webClient;
 
+
+
     @Autowired
     public ExternalDeliveryController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
+
     }
 
     @GetMapping("/api/askDelivery")
@@ -69,6 +91,8 @@ public class ExternalDeliveryController {
 
         return user;
     }
+
+
 
 
 }

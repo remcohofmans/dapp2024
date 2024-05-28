@@ -1,5 +1,7 @@
 package be.kuleuven.dsgt4;
 
+import com.example.soapclient.SoapClientService;
+import com.example.soapclient.WineServiceClient;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import org.springframework.boot.SpringApplication;
@@ -29,6 +31,7 @@ Dsgt4Application {
 		//System.setProperty("server.port", System.getenv().getOrDefault("PORT", "8080"));
 		SpringApplication.run(Dsgt4Application.class, args);
 
+		SoapController soapController = new SoapController(new SoapClientService(new WineServiceClient()));
 }
 
 	@Bean
@@ -88,6 +91,8 @@ Dsgt4Application {
 		threadPoolTaskExecutor.setThreadNamePrefix("Async-");
 		return threadPoolTaskExecutor;
 	}
+	////////////
+
 
 
 	

@@ -1,0 +1,17 @@
+be/kuleuven/dsgt4/UserMessage.class
+be/kuleuven/dsgt4/Delivery.class
+be/kuleuven/dsgt4/auth/WebSecurityConfig.class
+be/kuleuven/dsgt4/LiquorShop.class
+be/kuleuven/dsgt4/ExternalDeliveryController.class
+be/kuleuven/dsgt4/User.class
+be/kuleuven/dsgt4/auth/SecurityFilter.class
+be/kuleuven/dsgt4/Order.class
+be/kuleuven/dsgt4/Liquor.class
+be/kuleuven/dsgt4/ViewController.class
+be/kuleuven/dsgt4/Test.class
+be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class
+be/kuleuven/dsgt4/Dsgt4Application.class
+com/example/soapclient/config.class
+com/example/soapclient/WineServiceClient.class
+com/example/soapclient/SoapClientService.class
+be/kuleuven/dsgt4/SoapController.class

@@ -12,6 +12,7 @@ setupAuth();
 setupEventHandlers();
 handleAuthStateChanges();
 let globalData;
+let mostExpensive;
 
 function setupAuth() {
   const firebaseConfig = location.hostname === "localhost" ? {
@@ -87,6 +88,7 @@ function handleAuthStateChanges() {
 function fetchData(token) {
   fetchHello(token);
   fetchWhoAmI(token);
+  fetchMostExpensive(token);
   console.log('------');
 }
 
@@ -120,6 +122,21 @@ function fetchHello(token) {
         addContent(data);
       })
       .catch(error => console.error("Error fetching /api/askDelivery:", error));
+}
+
+
+function fetchMostExpensive(token) {
+  fetch('/api/askWine', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+      .then(response => response.text())
+      .then(data => {
+        console.log(data);
+
+        mostExpensive=data;
+        addContent(data);
+      })
+      .catch(error => console.error("Error fetching /api/askWine:", error));
 }
 
 function fetchWhoAmI(token) {
@@ -178,15 +195,15 @@ function displayOrderPage() {
   });
 
   // Re-setup the logout button event handler
-  const logoutButton = document.createElement('button');
-  logoutButton.id = 'btnLogout';
-  logoutButton.innerText = 'Logout';
-  document.body.appendChild(logoutButton);
+  //const logoutButton = document.createElement('button');
+  //logoutButton.id = 'btnLogout';
+  //logoutButton.innerText = 'Logout';
+  //document.body.appendChild(logoutButton);
 
-  logoutButton.addEventListener('click', () => {
-    getAuth().signOut().catch(err => console.error('Error signing out:', err));
-    location.reload(); // Refresh the page to show the login form again
-  });
+  //logoutButton.addEventListener('click', () => {
+  //  getAuth().signOut().catch(err => console.error('Error signing out:', err));
+  //  location.reload(); // Refresh the page to show the login form again
+  //});
 }
 
 function displayCheckoutPage() {
@@ -229,13 +246,22 @@ function displayCheckoutPage() {
 
   const confirmationButton = document.createElement('button');
   confirmationButton.id = 'btnCheckout';
-  confirmationButton.innerText = 'Pay';
+  confirmationButton.innerText = "Go to checkout";
   document.body.appendChild(confirmationButton);
   confirmationButton.addEventListener('click', () => {
     ///////PAYMENT CHECK / ORDERING INFO NEEDS TO BE SENT (PAYMENT FUNCTION STILL NEEDS TO BE INTEGRATED)!!!!
     displayConfirmationPage();
 
   });
+  const confirmationField = document.createElement('input');
+  confirmationField.type = 'text'; // Set the input type to text
+  confirmationField.id = 'txtCheckout'; // Set the ID
+  confirmationField.value = mostExpensive; // Set the initial value
+
+// You can optionally set the readonly attribute to prevent editing
+// confirmationField.readOnly = true;
+
+  document.body.appendChild(confirmationField)
 
   // Re-setup the logout button event handler
   const logoutButton = document.createElement('button');

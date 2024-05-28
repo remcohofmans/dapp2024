@@ -123,9 +123,14 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-webflux</artifactId>
 			</dependency>
+		<dependency>
+			<groupId>jakarta.xml.ws</groupId>
+			<artifactId>jakarta.xml.ws-api</artifactId>
+			<version>LATEST</version>  </dependency>
 
 
-			<!-- -->
+
+		<!-- -->
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
@@ -142,6 +147,7 @@
 			<version>20210307</version>
 			<scope>compile</scope>
 		</dependency>
+
 
 	</dependencies>
 
