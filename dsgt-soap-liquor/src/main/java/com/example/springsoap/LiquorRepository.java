@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -18,7 +19,7 @@ import io.liquormenu.gt.webservice.*;
 
 @Component
 public class LiquorRepository {
-    private static final Map<String, Liquor> liquors = new HashMap<>();
+    private static final Map<String, Liquor> liquors = new HashMap<String, Liquor>();
     private static final Map<String, ArrayList<Liquor>> orders = new HashMap<>();
     private static final String FILE_NAME = "stock.txt";
 
@@ -170,7 +171,7 @@ public class LiquorRepository {
         order.setTimestamp(LocalDateTime.now().toString());
         order.setDeliveryAddress(deliveryAddress);
 
-        ArrayList<Liquor> liquorOrder = new ArrayList<>();
+        ArrayList<Liquor> liquorOrder = new ArrayList<Liquor>();
         for (String liquorBrand : liquorList) {
             Liquor liquor = findLiquor(liquorBrand);
             if (liquor != null) {
@@ -194,7 +195,7 @@ public class LiquorRepository {
     }
 
     public List<Liquor> getLiquorCard() {
-        return new ArrayList<Liquor>(liquors.values());
+        return new ArrayList<Liquor>(liquors.keySet().stream().map(key -> liquors.get(key)).collect(Collectors.toList()));
     }
 
     public void addLiquor(Liquor liquor) {

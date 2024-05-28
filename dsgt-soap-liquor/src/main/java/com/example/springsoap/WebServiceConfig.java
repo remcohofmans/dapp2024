@@ -24,10 +24,10 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return new ServletRegistrationBean<>(servlet, "/ws/*");
     }
 
-    @Bean(name = "liquor")
+    @Bean(name = "meals")
     public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema mealsSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-        wsdl11Definition.setPortTypeName("LiquorPort");
+        wsdl11Definition.setPortTypeName("MealsPort");
         wsdl11Definition.setLocationUri("/ws");
         wsdl11Definition.setTargetNamespace("http://liquormenu.io/gt/webservice");
         wsdl11Definition.setSchema(mealsSchema);
