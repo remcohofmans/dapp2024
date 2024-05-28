@@ -1,0 +1,18 @@
+POST http://localhost:8080/ws
+Content-Type: text/xml
+
+<!--<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"-->
+<!--                  xmlns:gs="http://liquormenu.io/gt/webservice">-->
+<!--    <soapenv:Header/>-->
+<!--    <soapenv:Body>-->
+<!--        <gs:getCheapestLiquorRequest/>-->
+<!--    </soapenv:Body>-->
+<!--</soapenv:Envelope>-->
+
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:gs="http://liquormenu.io/gt/webservice">
+<soapenv:Header/>
+<soapenv:Body>
+    <gs:getMostExpensiveLiquorRequest/>
+</soapenv:Body>
+</soapenv:Envelope>

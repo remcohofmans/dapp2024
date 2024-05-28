@@ -15,6 +15,7 @@ import org.springframework.xml.xsd.XsdSchema;
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
+
     @Bean
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
@@ -24,18 +25,18 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return new ServletRegistrationBean<>(servlet, "/ws/*");
     }
 
-    @Bean(name = "meals")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema mealsSchema) {
+    @Bean(name = "liquors")
+    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema liquorsSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-        wsdl11Definition.setPortTypeName("MealsPort");
+        wsdl11Definition.setPortTypeName("LiquorsPort");
         wsdl11Definition.setLocationUri("/ws");
         wsdl11Definition.setTargetNamespace("http://liquormenu.io/gt/webservice");
-        wsdl11Definition.setSchema(mealsSchema);
+        wsdl11Definition.setSchema(liquorsSchema);
         return wsdl11Definition;
     }
 
     @Bean
-    public XsdSchema mealsSchema() {
+    public XsdSchema liquorsSchema() {
         return new SimpleXsdSchema(new ClassPathResource("Liquors.xsd"));
     }
 }
