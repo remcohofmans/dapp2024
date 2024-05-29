@@ -12,7 +12,7 @@ setupAuth();
 setupEventHandlers();
 handleAuthStateChanges();
 let globalData;
-let mostExpensive;
+
 
 function setupAuth() {
   const firebaseConfig = location.hostname === "localhost" ? {
@@ -88,7 +88,7 @@ function handleAuthStateChanges() {
 function fetchData(token) {
   fetchHello(token);
   fetchWhoAmI(token);
-  fetchMostExpensive(token);
+
   console.log('------');
 }
 
@@ -125,19 +125,6 @@ function fetchHello(token) {
 }
 
 
-function fetchMostExpensive(token) {
-  fetch('/api/askWine', {
-    headers: { Authorization: 'Bearer ' + token }
-  })
-      .then(response => response.text())
-      .then(data => {
-        console.log(data);
-
-        mostExpensive=data;
-        addContent(data);
-      })
-      .catch(error => console.error("Error fetching /api/askWine:", error));
-}
 
 function fetchWhoAmI(token) {
   fetch('/api/whoami', {
@@ -214,7 +201,8 @@ function displayCheckoutPage() {
   newStylesheet.rel = 'stylesheet';
   newStylesheet.href = '../cssFiles/Checkout_page.css';
   document.head.appendChild(newStylesheet);
-  //callGetWineCardService();
+
+
 
 // Create new content
   const newHeader = document.createElement('header');
@@ -253,15 +241,6 @@ function displayCheckoutPage() {
     displayConfirmationPage();
 
   });
-  const confirmationField = document.createElement('input');
-  confirmationField.type = 'text'; // Set the input type to text
-  confirmationField.id = 'txtCheckout'; // Set the ID
-  confirmationField.value = mostExpensive; // Set the initial value
-
-// You can optionally set the readonly attribute to prevent editing
-// confirmationField.readOnly = true;
-
-  document.body.appendChild(confirmationField)
 
   // Re-setup the logout button event handler
   const logoutButton = document.createElement('button');
@@ -346,86 +325,3 @@ function displayConfirmationPage() {
   });
 }
 
-////////////////////////////////
-/*
-const axios = require('axios');
-const xml2js = require('xml2js');
-
-async function callGetWineCardService() {
-
-  const xmlRequest = `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://winemenu.io/gt/webservice">
-            <soapenv:Header/>
-            <soapenv:Body>
-                <tns:getWineCardRequest/>
-            </soapenv:Body>
-        </soapenv:Envelope>`;
-
-  try {
-
-    const response = await axios.post('http://dapp.uksouth.cloudapp.azure.com:12000/ws/wines.wsdl', xmlRequest, {
-      headers: { 'Content-Type': 'text/xml' }
-    });
-
-    // Parse XML response to JSON
-    const jsonResponse = await xml2js.parseStringPromise(response.data, { explicitArray: false });
-
-    // Extract and process the data from the response
-    const wines = jsonResponse['soapenv:Envelope']['soapenv:Body']['tns:getWineCardResponse']['tns:wine'];
-
-    console.log("Wines:", wines);
-
-    // Process each wine
-    if (Array.isArray(wines)) {
-      wines.forEach(wine => {
-        console.log(`Name: ${wine.name}`);
-        console.log(`Year: ${wine.year}`);
-        console.log(`Price: ${wine.price}`);
-        console.log(`Percentage: ${wine.percentage}`);
-        console.log(`Taste Palette: ${wine.tastePallet}`);
-        console.log(`Quantity: ${wine.quantity}`);
-        console.log('------');
-      });
-    } else if (wines) {
-      // Single wine entry
-      console.log(`Name: ${wines.name}`);
-      console.log(`Year: ${wines.year}`);
-      console.log(`Price: ${wines.price}`);
-      console.log(`Percentage: ${wines.percentage}`);
-      console.log(`Taste Palette: ${wines.tastePallet}`);
-      console.log(`Quantity: ${wines.quantity}`);
-    } else {
-      console.log('No wines found.');
-    }
-
-  } catch (error) {
-    console.error('Error calling SOAP service:', error);
-  }
-}
-
-async function checkEndpoint(url) {
-  try {
-    const response = await axios.get(url);
-    if (response.status === 200) {
-      const confirmationButton = document.createElement('button');
-      confirmationButton.id = 'btnCheckout';
-      confirmationButton.innerText = '1';
-      document.body.appendChild(confirmationButton);
-      console.log("Endpoint is reachable:", url);
-    } else {
-      const confirmationButton = document.createElement('button');
-      confirmationButton.id = 'btnCheckout';
-      confirmationButton.innerText = '2';
-      document.body.appendChild(confirmationButton);
-      console.error("Unexpected response status:", response.status);
-    }
-  } catch (error) {
-    const confirmationButton = document.createElement('button');
-    confirmationButton.id = 'btnCheckout';
-    confirmationButton.innerText = '3';
-    document.body.appendChild(confirmationButton);
-    console.error("Error reaching the endpoint:", error.message);
-  }
-}
-*/
-// Use this function before calling the SOAP service

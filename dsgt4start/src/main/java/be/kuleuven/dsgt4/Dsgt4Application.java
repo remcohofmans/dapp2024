@@ -1,7 +1,5 @@
 package be.kuleuven.dsgt4;
 
-import com.example.soapclient.SoapClientService;
-import com.example.soapclient.WineServiceClient;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.HypermediaWebClientConfigurer;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,8 +27,6 @@ Dsgt4Application {
 	public static void main(String[] args)  {
 		//System.setProperty("server.port", System.getenv().getOrDefault("PORT", "8080"));
 		SpringApplication.run(Dsgt4Application.class, args);
-
-		SoapController soapController = new SoapController(new SoapClientService(new WineServiceClient()));
 }
 
 	@Bean
@@ -81,17 +76,7 @@ Dsgt4Application {
 		firewall.setAllowUrlEncodedSlash(true);
 		return firewall;
 	}
-	/////////////////////////////////////////
-	@Bean
-	public ThreadPoolTaskExecutor getAsyncExecutor(){
-		ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-		threadPoolTaskExecutor.setCorePoolSize(20);
-		threadPoolTaskExecutor.setMaxPoolSize(1000);
-		threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-		threadPoolTaskExecutor.setThreadNamePrefix("Async-");
-		return threadPoolTaskExecutor;
-	}
-	////////////
+
 
 
 
