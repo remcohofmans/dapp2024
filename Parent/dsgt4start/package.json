@@ -1,0 +1,18 @@
+{
+  "name": "dsgt4start",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remcohofmans/dapp2024.git"
+  },
+  "private": true,
+  "dependencies": {
+    "axios": "^1.7.2",
+    "xml2js": "^0.6.2"
+  }
+}
