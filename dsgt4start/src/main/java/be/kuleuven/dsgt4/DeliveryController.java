@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -18,17 +20,17 @@ import java.util.concurrent.ExecutionException;
 
 //
 @RestController
-public class DeliveryController_REST {
+public class DeliveryController {
 
     @Autowired
     Firestore db;
 
     private final WebClient webClient;
-
+    private User user;
 
 
     @Autowired
-    public DeliveryController_REST(WebClient.Builder webClientBuilder) {
+    public DeliveryController(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
 
     }
@@ -43,11 +45,23 @@ public class DeliveryController_REST {
                     .block();
 
 
-            return webClient.get()
+            String block = webClient.get()
                     .uri("http://dapp.southafricanorth.cloudapp.azure.com:13000/rest/delivery/rest/f1e2d3c4-b5a6-7890-1234-56789abcdef0/overviewOfAlldelivery/8889")  // Replace with the actual URL you want to call
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            UUID orderId = UUID.randomUUID();
+            LocalDateTime orderTime = LocalDateTime.now();
+            String customer = user.getEmail();
+            List<String> items = Arrays.asList("item1", "item2", "item3");
+            OrderMessage.DeliveryInfo deliveryInfo = new OrderMessage.DeliveryInfo("123 Main St", "2023-06-01T12:00:00", "Pending");
+            OrderMessage orderMessage = new OrderMessage(orderId, orderTime, customer, items, deliveryInfo);
+
+            // Store OrderMessage in Firestore
+            this.db.collection("orderMessage").document(orderMessage.getOrderId().toString()).set(orderMessage.toDoc()).get();
+
+
+            return block;
 
         } catch (WebClientResponseException e) {
             System.err.println("HTTP error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
@@ -64,7 +78,7 @@ public class DeliveryController_REST {
 
     @GetMapping("/api/whoami")
     public User whoami() throws InterruptedException, ExecutionException {
-        var user = WebSecurityConfig.getUser();
+        user = WebSecurityConfig.getUser();
         if (!user.isManager()) throw new AuthorizationServiceException("You are not a manager");
 
         UUID buuid = UUID.randomUUID();
