@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/dsgt4start/dsgt4.iml" filepath="$PROJECT_DIR$/dsgt4start/dsgt4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dappFinal.iml" filepath="$PROJECT_DIR$/.idea/dappFinal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Parent/dsgt4start/dsgt4.iml" filepath="$PROJECT_DIR$/Parent/dsgt4start/dsgt4.iml" />
     </modules>
   </component>
 </project>
