@@ -142,7 +142,10 @@ function fetchLiquorData() {
   fetch('http://localhost:8090/api/liquor-names')
       .then(response => response.json())
       .then(data => {
-        const select = document.getElementById("drink");
+        const select = document.getElementById("liquor");
+        const placeholderOption = document.createElement("option");
+        placeholderOption.text = "Liquor options here";
+        select.add(placeholderOption);
         data.forEach(function(item) {
           const [name, price] = item.split(" - $");
           const option = document.createElement("option");
@@ -154,14 +157,48 @@ function fetchLiquorData() {
       .catch(error => console.error("Error fetching liquor data:", error));
 }
 
+function fetchWineData() {
+  fetch('http://localhost:8091/api/wine-names')
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById("wine");
+        const placeholderOption = document.createElement("option");
+        placeholderOption.text = "Wine options here";
+        select.add(placeholderOption);
+        data.forEach(function(item) {
+          const [name, price] = item.split(" - $");
+          const option = document.createElement("option");
+          option.text = `${name} - $${price}`;
+          option.value = `${name}:${price}`;
+          select.add(option);
+        });
+      })
+      .catch(error => console.error("Error fetching wine data:", error));
+}
 
-
-function addToBasket() {
-  const select = document.getElementById("drink");
+function addToLiquorBasket() {
+  console.log("Adding liquor to basket");
+  const select = document.getElementById("liquor");
   const selectedOption = select.options[select.selectedIndex];
-  const value = selectedOption.value;
-  const [name, price] = value.split(":"); // Use ":" to split the name and price
+  if (selectedOption.text !== "Liquor") { // Check if an actual liquor option is selected
+    const value = selectedOption.value;
+    const [name, price] = value.split(":"); // Use ":" to split the name and price
+    addToBasket(name, parseFloat(price)); // Convert price to float
+  }
+}
 
+function addToWineBasket() {
+  console.log("Adding wine to basket");
+  const select = document.getElementById("wine");
+  const selectedOption = select.options[select.selectedIndex];
+  if (selectedOption.text !== "Wine") { // Check if an actual wine option is selected
+    const value = selectedOption.value;
+    const [name, price] = value.split(":"); // Use ":" to split the name and price
+    addToBasket(name, parseFloat(price)); // Convert price to float
+  }
+}
+
+function addToBasket(name, price) {
   // Parse the current basket count and total price
   const basketParagraph = document.getElementById("basket");
   let [basketText, totalPriceText] = basketParagraph.innerText.split(", Total price: $");
@@ -170,14 +207,11 @@ function addToBasket() {
 
   // Update the basket count and total price
   basketCount += 1; // Increment the basket count
-  totalPrice += parseFloat(price); // Add the selected item's price to the total
+  totalPrice += price; // Add the selected item's price to the total
 
   // Update the basket paragraph text
   basketParagraph.innerText = `Basket : ${basketCount}, Total price: $${totalPrice.toFixed(2)}`;
-
-  return false;
 }
-
 
 function displayOrderPage() {
   // Clear the existing content
@@ -201,20 +235,28 @@ function displayOrderPage() {
   newContent.innerHTML = `
     <h1>Order Your Spirits</h1>
     <form id="basketForm">
-      <label for="drink">Choose your fine spirits here:</label>
-      <select id="drink" name="drink">
-        
-      </select>
+      <label for="liquor">Choose your fine liquors here:</label>
+      <select id="liquor" name="liquor"></select>
+      <button type="button" id="liquorButton">Add to Basket</button> <!-- Add button for liquor -->
       <br>
-      <input type="submit" value="Add to Basket">
+      <label for="wine">Choose your fine wines here:</label>
+      <select id="wine" name="wine"></select>
+      <button type="button" id="wineButton">Add to Basket</button> <!-- Add button for wine -->
     </form>
     <p id="basket">Basket : 0, Total price: $0.00</p>
-    
   `;
   document.body.appendChild(newContent);
 
   // Fetch available drinks and populate the dropdown menu
   fetchLiquorData();
+  fetchWineData();
+
+  // Add event listeners to the "Add to Basket" buttons for liquor and wine
+  const liquorButton = document.getElementById('liquorButton');
+  const wineButton = document.getElementById('wineButton');
+
+  liquorButton.addEventListener('click', addToLiquorBasket);
+  wineButton.addEventListener('click', addToWineBasket);
 
   // Update the event listener for the form submission to prevent page reload
   const basketForm = document.getElementById('basketForm');
@@ -234,6 +276,7 @@ function displayOrderPage() {
   });
 }
 
+
 function displayCheckoutPage() {
   // Clear the existing content
   document.body.innerHTML = '';
@@ -242,7 +285,6 @@ function displayCheckoutPage() {
   newStylesheet.rel = 'stylesheet';
   newStylesheet.href = '../cssFiles/Checkout_page.css';
   document.head.appendChild(newStylesheet);
-
 
 
 // Create new content
@@ -271,7 +313,6 @@ function displayCheckoutPage() {
     </form>
   `;
   document.body.appendChild(checkoutContent);
-  // I still need to add the add to basket function!!!!
 
   const confirmationButton = document.createElement('button');
   confirmationButton.id = 'btnCheckout';
@@ -365,4 +406,5 @@ function displayConfirmationPage() {
     location.reload(); // Refresh the page to show the login form again
   });
 }
+
 
