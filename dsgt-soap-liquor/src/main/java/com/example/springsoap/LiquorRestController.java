@@ -21,7 +21,7 @@ public class LiquorRestController {
     @GetMapping("/api/liquor-names")
     public List<String> getLiquorNames() {
         return liquorRepository.getLiquorCard().stream()
-                .map(Liquor::getBrand)
+                .map(liquor -> liquor.getBrand() + " - $" + liquor.getPrice())
                 .collect(Collectors.toList());
     }
 }

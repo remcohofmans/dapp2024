@@ -144,13 +144,38 @@ function fetchLiquorData() {
       .then(data => {
         const select = document.getElementById("drink");
         data.forEach(function(item) {
+          const [name, price] = item.split(" - $");
           const option = document.createElement("option");
-          option.text = item;
-          option.value = item;
-          select.appendChild(option);
+          option.text = `${name} - $${price}`; // Include price in the text
+          option.value = `${name}:${price}`; // Include both name and price in the value
+          select.add(option);
         });
       })
-      .catch(error => console.error("Error fetching liquor names:", error));
+      .catch(error => console.error("Error fetching liquor data:", error));
+}
+
+
+
+function addToBasket() {
+  const select = document.getElementById("drink");
+  const selectedOption = select.options[select.selectedIndex];
+  const value = selectedOption.value;
+  const [name, price] = value.split(":"); // Use ":" to split the name and price
+
+  // Parse the current basket count and total price
+  const basketParagraph = document.getElementById("basket");
+  let [basketText, totalPriceText] = basketParagraph.innerText.split(", Total price: $");
+  let basketCount = parseInt(basketText.split("Basket : ")[1]);
+  let totalPrice = parseFloat(totalPriceText);
+
+  // Update the basket count and total price
+  basketCount += 1; // Increment the basket count
+  totalPrice += parseFloat(price); // Add the selected item's price to the total
+
+  // Update the basket paragraph text
+  basketParagraph.innerText = `Basket : ${basketCount}, Total price: $${totalPrice.toFixed(2)}`;
+
+  return false;
 }
 
 
@@ -175,7 +200,7 @@ function displayOrderPage() {
   const newContent = document.createElement('div');
   newContent.innerHTML = `
     <h1>Order Your Spirits</h1>
-    <form onsubmit="event.preventDefault(); addToBasket();">
+    <form id="basketForm">
       <label for="drink">Choose your fine spirits here:</label>
       <select id="drink" name="drink">
         
@@ -190,6 +215,13 @@ function displayOrderPage() {
 
   // Fetch available drinks and populate the dropdown menu
   fetchLiquorData();
+
+  // Update the event listener for the form submission to prevent page reload
+  const basketForm = document.getElementById('basketForm');
+  basketForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission behavior
+    addToBasket();
+  });
 
   // Add event listener to the checkout button
   const checkoutButton = document.createElement('button');
