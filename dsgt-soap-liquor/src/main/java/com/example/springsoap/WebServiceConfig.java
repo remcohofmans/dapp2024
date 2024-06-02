@@ -12,6 +12,7 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
+
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
@@ -25,17 +26,17 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
 
     @Bean(name = "liquor")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema mealsSchema) {
+    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema liquorSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("LiquorPort");
         wsdl11Definition.setLocationUri("/ws");
         wsdl11Definition.setTargetNamespace("http://liquormenu.io/gt/webservice");
-        wsdl11Definition.setSchema(mealsSchema);
+        wsdl11Definition.setSchema(liquorSchema);
         return wsdl11Definition;
     }
 
     @Bean
-    public XsdSchema mealsSchema() {
+    public XsdSchema liquorSchema() {
         return new SimpleXsdSchema(new ClassPathResource("Liquors.xsd"));
     }
 }
