@@ -14,6 +14,7 @@ C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\target\generat
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\target\generated-sources\jaxb\io\liquormenu\gt\webservice\GetLiquorCardRequest.java
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\target\generated-sources\jaxb\io\liquormenu\gt\webservice\ObjectFactory.java
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\src\main\java\com\example\springsoap\WebServiceConfig.java
+C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\src\main\java\com\example\springsoap\LiquorRestController.java
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\target\generated-sources\jaxb\io\liquormenu\gt\webservice\GetCheapestLiquorRequest.java
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\target\generated-sources\jaxb\io\liquormenu\gt\webservice\GetMostExpensiveLiquorResponse.java
 C:\Users\jensg\OneDrive\Bureaublad\DSGT\dapp2024\dsgt-soap-liquor\src\main\java\com\example\springsoap\LiquorRepository.java

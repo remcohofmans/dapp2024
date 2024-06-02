@@ -5,6 +5,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
@@ -38,5 +40,17 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     @Bean
     public XsdSchema liquorSchema() {
         return new SimpleXsdSchema(new ClassPathResource("Liquors.xsd"));
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:8080")
+                        .allowedMethods("GET");
+            }
+        };
     }
 }

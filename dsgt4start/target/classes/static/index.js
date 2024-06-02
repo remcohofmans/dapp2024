@@ -138,6 +138,22 @@ function fetchWhoAmI(token) {
       .catch(error => console.error("Error fetching /api/whoami:", error));
 }
 
+function fetchLiquorData() {
+  fetch('http://localhost:8090/api/liquor-names')
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById("drink");
+        data.forEach(function(item) {
+          const option = document.createElement("option");
+          option.text = item;
+          option.value = item;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => console.error("Error fetching liquor names:", error));
+}
+
+
 function displayOrderPage() {
   // Clear the existing content
   document.body.innerHTML = '';
@@ -171,7 +187,11 @@ function displayOrderPage() {
     
   `;
   document.body.appendChild(newContent);
-  // I still need to add the add to basket function!!!!
+
+  // Fetch available drinks and populate the dropdown menu
+  fetchLiquorData();
+
+  // Add event listener to the checkout button
   const checkoutButton = document.createElement('button');
   checkoutButton.id = 'btnCheckout';
   checkoutButton.innerText = 'Go to checkout';
@@ -180,17 +200,6 @@ function displayOrderPage() {
   checkoutButton.addEventListener('click', () => {
     displayCheckoutPage();
   });
-
-  // Re-setup the logout button event handler
-  //const logoutButton = document.createElement('button');
-  //logoutButton.id = 'btnLogout';
-  //logoutButton.innerText = 'Logout';
-  //document.body.appendChild(logoutButton);
-
-  //logoutButton.addEventListener('click', () => {
-  //  getAuth().signOut().catch(err => console.error('Error signing out:', err));
-  //  location.reload(); // Refresh the page to show the login form again
-  //});
 }
 
 function displayCheckoutPage() {

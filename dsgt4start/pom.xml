@@ -10,10 +10,10 @@
 	<description>DSGT4</description>
 	<properties>
 		<!--
-     *************************************************************
-        Please set the following parameter for the filename
-        for the final zip to `cloud-[1 or 2].[firstname].[lastname]`.
-     ************************************************************* -->
+         *************************************************************
+            Please set the following parameter for the filename
+            for the final zip to `cloud-[1 or 2].[firstname].[lastname]`.
+         ************************************************************* -->
 		<zip.filename>cloud-2.firstname.lastname</zip.filename>
 
 		<java.version>17</java.version>
@@ -95,15 +95,21 @@
 			<artifactId>java-jwt</artifactId>
 			<version>4.0.0</version>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-core</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-ws-core</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.sun.xml.messaging.saaj</groupId>
+			<artifactId>saaj-impl</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>SpringSOAP</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
