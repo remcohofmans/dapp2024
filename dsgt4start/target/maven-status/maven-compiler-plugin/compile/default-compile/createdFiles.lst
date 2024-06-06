@@ -5,8 +5,8 @@ be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class
 be/kuleuven/dsgt4/UserMessage.class
 be/kuleuven/dsgt4/Dsgt4Application.class
 be/kuleuven/dsgt4/OrderMessage.class
-be/kuleuven/dsgt4/auth/WebSecurityConfig.class
 be/kuleuven/dsgt4/Delivery.class
+be/kuleuven/dsgt4/auth/WebSecurityConfig.class
 be/kuleuven/dsgt4/LiquorShop.class
 be/kuleuven/dsgt4/User.class
 be/kuleuven/dsgt4/OrderMessage$DeliveryInfo.class
