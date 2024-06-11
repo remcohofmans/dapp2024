@@ -237,7 +237,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<packageName>be.kuleuven.dsgt4.wsdl</packageName>
+					<packageName>be.kuleuven.dsgt4.wsdl.generatedClasses</packageName>
 					<wsdlUrls>
 						<wsdlUrl>http://dapp.uksouth.cloudapp.azure.com:12000/ws/wines.wsdl</wsdlUrl>
 					</wsdlUrls>

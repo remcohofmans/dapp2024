@@ -1,10 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
+import { getFirestore, connectFirestoreEmulator, doc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js";
 import {
-  getAuth,
-  connectAuthEmulator,
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+    getAuth,
+    connectAuthEmulator,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
 
 // Setup authentication, wire up events, and handle auth state changes
@@ -14,399 +15,696 @@ handleAuthStateChanges();
 let globalData;
 
 let wines = [];
-let basketWines=[];
+let liquors = [];
+let basketWines = [];
+let basketLiquors = [];
 let basket = {};
 let totalPrice = 0;
 let token;
 
-
 function setupAuth() {
-  const firebaseConfig = location.hostname === "localhost" ? {
-    apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
-    projectId: "demo-distributed-systems-kul",
-  } : {
-    // TODO: for level 2, paste your config here
-  };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
+        projectId: "demo-distributed-systems-kul",
+    };
 
-  const firebaseApp = initializeApp(firebaseConfig);
-  const auth = getAuth(firebaseApp);
-  auth.signOut().catch(err => console.error('Error signing out:', err));
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+    const db = getFirestore(firebaseApp);
 
-  if (location.hostname === "localhost") {
-    connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
-  }
+    // Connect to emulators if running locally
+    if (location.hostname === "localhost") {
+        connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
+        connectFirestoreEmulator(db, "localhost", 8084);  // Ensure the correct ports
+    }
+
+    return { auth, db };
 }
 
+const { auth, db } = setupAuth();
+
+// Function to fetch data from the first URL (liquor-info)
+async function fetchLiquorData() {
+    try {
+        const response = await fetch("http://localhost:8090/api/liquor-info");
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error("Error fetching liquor data:", error);
+        throw error; // Throw error to handle it outside
+    }
+}
+
+// Function to fetch data from the second URL (wines)
+async function fetchWineData() {
+    try {
+        const response = await fetch("http://localhost:8080/wines");
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error("Error fetching wine data:", error);
+        throw error; // Throw error to handle it outside
+    }
+}
+
+// Function to populate Firestore with fetched data
+async function populateFirestore() {
+    try {
+        // Fetch data from both URLs
+        const liquorData = await fetchLiquorData();
+        const wineData = await fetchWineData();
+
+        // Process and save liquor data to Firestore
+        for (const item of liquorData) {
+            const { brand, price, alcoholPercentage, volume, type, quantity } = item;
+            const liquorDocRef = doc(db, "liquors", brand); // Assuming "brand" as document ID
+            await setDoc(liquorDocRef, {
+                brand,
+                price,
+                alcoholPercentage,
+                volume,
+                type,
+                quantity
+            });
+        }
+
+        // Process and save wine data to Firestore
+        for (const item of wineData) {
+            const { name, year, price, percentage, tastePallet, quantity } = item;
+            const wineDocRef = doc(db, "wines", name); // Assuming "name" as document ID
+            await setDoc(wineDocRef, {
+                name,
+                year,
+                price,
+                percentage,
+                tastePallet,
+                quantity
+            });
+        }
+
+        // Initialize inventory collection with spirits and their quantities
+        const inventoryData = {};
+
+        // Add liquors to inventoryData
+        for (const item of liquorData) {
+            const { brand, quantity } = item;
+            inventoryData[brand] = { quantity };
+        }
+
+        // Add wines to inventoryData
+        for (const item of wineData) {
+            const { name, quantity } = item;
+            inventoryData[name] = { quantity };
+        }
+
+        // Create or update inventory collection
+        const inventoryRef = doc(db, "inventory", "items");
+        await setDoc(inventoryRef, inventoryData);
+
+        console.log("Data successfully populated to Firestore.");
+    } catch (error) {
+        console.error("Error populating Firestore:", error);
+    }
+}
+populateFirestore();
+
+
+
+
 function setupEventHandlers() {
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const signInButton = document.getElementById("btnSignIn");
-  const signUpButton = document.getElementById("btnSignUp");
-  const logoutButton = document.getElementById("btnLogout");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const signInButton = document.getElementById("btnSignIn");
+    const signUpButton = document.getElementById("btnSignUp");
+    const logoutButton = document.getElementById("btnLogout");
 
-  signInButton.addEventListener("click", () => {
-    signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
-        .then(() => {
-          console.log("Signed in successfully");
-          ////////////////////////////  Add check for availability if not go to error page "service not available"
-          displayOrderPage();
-        })
-        .catch(error => {
-          console.error("Error signing in:", error.message);
-          alert(error.message);
-        });
-  });
+    signInButton.addEventListener("click", () => {
+        signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
+            .then(() => {
+                console.log("Signed in successfully");
+                displayOrderPage();
+            })
+            .catch(error => {
+                console.error("Error signing in:", error.message);
+                alert(error.message);
+            });
+    });
 
-  signUpButton.addEventListener("click", () => {
-    createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
-        .then(() => console.log("Account created successfully"))
-        .catch(error => {
-          console.error("Error creating account:", error.message);
-          alert(error.message);
-        });
-  });
+    signUpButton.addEventListener("click", () => {
+        createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
+            .then(() => console.log("Account created successfully"))
+            .catch(error => {
+                console.error("Error creating account:", error.message);
+                alert(error.message);
+            });
+    });
 
-  logoutButton.addEventListener("click", () => {
-    getAuth().signOut().catch(err => console.error('Error signing out:', err));
-  });
+    logoutButton.addEventListener("click", () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+    });
 }
 
 function handleAuthStateChanges() {
-  const auth = getAuth();
-  onAuthStateChanged(auth, user => {
-    if (!user) {
-		console.log("Not INside Get Token");
-      showUnauthenticated();
-      return;
-    }
+    const auth = getAuth();
+    onAuthStateChanged(auth, user => {
+        if (!user) {
+            showUnauthenticated();
+            return;
+        }
 
-    user.getIdTokenResult().then(idTokenResult => {
-		console.log("INside Get Tokeh");
-      showAuthenticated(user.email);
-	  token=idTokenResult.token;
-      
-
-    }).catch(err => {
-      console.error("Error getting ID token result:", err);
-      showUnauthenticated();
+        user.getIdTokenResult().then(idTokenResult => {
+            showAuthenticated(user.email);
+            token = idTokenResult.token;
+        }).catch(err => {
+            console.error("Error getting ID token result:", err);
+            showUnauthenticated();
+        });
     });
-  });
-
 }
 
 function fetchData(token) {
-  fetchHello(token);
-  fetchWhoAmI(token);
-
-  console.log('------');
+    fetchHello(token);
+    fetchWhoAmI(token);
 }
 
 function showAuthenticated(username) {
-  document.getElementById("namediv").innerHTML = "Hello " + username;
-  document.getElementById("logindiv").style.display = "none";
-  document.getElementById("contentdiv").style.display = "block";
+    document.getElementById("namediv").innerHTML = "Hello " + username;
+    document.getElementById("logindiv").style.display = "none";
+    document.getElementById("contentdiv").style.display = "block";
 }
 
 function showUnauthenticated() {
-  document.getElementById("namediv").innerHTML = "";
-  document.getElementById("email").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("logindiv").style.display = "block";
-  document.getElementById("contentdiv").style.display = "none";
+    document.getElementById("namediv").innerHTML = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("logindiv").style.display = "block";
+    document.getElementById("contentdiv").style.display = "none";
 }
 
 function addContent(text) {
-  document.getElementById("contentdiv").inner
- += text + "<br/>";
+    document.getElementById("contentdiv").innerHTML += text + "<br/>";
 }
 
 function fetchHello(token) {
-  const basketWinesQueryParam = basketWines.join(',');
-  const url = `/api/askDelivery?basketWines=${basketWinesQueryParam}`;
+    const basketWinesQueryParam = basketWines.join(',');
+    const basketLiquorsQueryParam = basketLiquors.join(',');
+    const url = `/api/askDelivery?basketWines=${basketWinesQueryParam}&basketLiquors=${basketLiquorsQueryParam}`;
 
-  fetch(url, {
-    headers: { Authorization: 'Bearer ' + token }
-  })
-      .then(response => response.text())
-      .then(data => {
-        console.log(data);
-
-        globalData = data;
-        addContent(data);
-      })
-      .catch(error => console.error("Error fetching /api/askDelivery:", error));
+    fetch(url, {
+        headers: { Authorization: 'Bearer ' + token }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();
+        })
+        .then(data => {
+            try {
+                globalData = JSON.parse(data);
+                addContent(data);
+            } catch (error) {
+                console.error("Error parsing JSON:", error);
+            }
+        })
+        .catch(error => console.error("Error fetching /api/askDelivery:", error));
 }
 
-
-
-
 function fetchWhoAmI(token) {
-  fetch('/api/whoami', {
-    headers: { Authorization: 'Bearer ' + token }
-  })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data.email, data.role);
-        addContent(`Whoami at rest service: ${data.email} - ${data.role}`);
-      })
-      .catch(error => console.error("Error fetching /api/whoami:", error));
+    fetch('/api/whoami', {
+        headers: { Authorization: 'Bearer ' + token }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.email, data.role);
+            addContent(`Whoami at rest service: ${data.email} - ${data.role}`);
+        })
+        .catch(error => {
+            console.error("Error fetching /api/whoami:", error);
+            addContent(`Error fetching whoami: ${error.message}`);
+        });
 }
 
 function displayOrderPage() {
-  // Clear the existing content
-  document.body.innerHTML = '';
+    basketWines = [];
+    basketLiquors = [];
+    basket = {};
+    totalPrice = 0;
+    // Clear the existing content
+    document.body.innerHTML = '';
 
-  // Load new CSS file
-  const newStylesheet = document.createElement('link');
-  newStylesheet.rel = 'stylesheet';
-  newStylesheet.href = '../cssFiles/Order_page.css';
-  document.head.appendChild(newStylesheet);
+    // Load new CSS file
+    const newStylesheet = document.createElement('link');
+    newStylesheet.rel = 'stylesheet';
+    newStylesheet.href = '../cssFiles/Order_page.css';
+    document.head.appendChild(newStylesheet);
 
-  // Create new content
-  const newHeader = document.createElement('header');
-  newHeader.className = 'site-header';
-  newHeader.innerHTML = `
+    // Create new content
+    const newHeader = document.createElement('header');
+    newHeader.className = 'site-header';
+    newHeader.innerHTML = `
     <h1>Bam <u>Booz</u>led</h1>
   `;
-  document.body.appendChild(newHeader);
+    document.body.appendChild(newHeader);
 
-  const newContent = document.createElement('div');
-  newContent.innerHTML = `
+    const newContent = document.createElement('div');
+    newContent.innerHTML = `
     <h1>Order Your Spirits</h1>
     <form id="orderForm">
       <label for="drink">Choose your fine wine here:</label>
-      <select id="drink" name="drink">
-        
-      </select>
-      <br>
+      <select id="drink" name="drink"></select>
       <input type="submit" value="Add to Basket">
     </form>
-    <p id="basket">Basket : 0, Total price: $0.00</p>
-    
+    <form id="liquorForm">
+      <label for="liquor">Choose your fine liquor here:</label>
+      <select id="liquor" name="liquor"></select>
+      <input type="submit" value="Add to Basket">
+    </form>
+    <p id="basket">Basket: 0, Total price: $0.00</p>
   `;
-  document.body.appendChild(newContent);
-  document.getElementById("orderForm").addEventListener("submit", (event) => {
-              event.preventDefault();
-              addToBasket();
-          });
-  fetchAndPopulateWines();
-  document.addEventListener("DOMContentLoaded", fetchAndPopulateWines);
-  
-  // Fetch and populate wines
-  function fetchAndPopulateWines() {
-      fetch("http://localhost:8080/wines")
-          .then(response => response.json())
-          .then(data => {
-              wines = data; // Store wines data
-              const selectElement = document.getElementById("drink");
-              selectElement.innerHTML = ""; // Clear existing options
+    document.body.appendChild(newContent);
 
-              data.forEach(wine => {
-                  const option = document.createElement("option");
-                  option.value = wine.name;
-                  option.textContent = `${wine.name} (${wine.year}) - $${wine.price}`;
-                  selectElement.appendChild(option);
-              });
-          })
-          .catch(error => console.error("Error fetching wines:", error));
-  }
+    document.getElementById("orderForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        addToBasket('wine');
+    });
 
-  // Add to basket function
-  function addToBasket() {
-      const selectElement = document.getElementById("drink");
-      const selectedWineName = selectElement.value;
-      const selectedWine = wines.find(wine => wine.name === selectedWineName);
+    document.getElementById("liquorForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        addToBasket('liquor');
+    });
 
-      if (selectedWine) {
-          if (basket[selectedWineName]) {
-              basket[selectedWineName].quantity += 1;
-          } else {
-              basket[selectedWineName] = { ...selectedWine, quantity: 1 };
-          }
+    fetchAndPopulateWines();
+    fetchAndPopulateLiquors();
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchAndPopulateWines();
+        fetchAndPopulateLiquors();
+    });
 
-          totalPrice += selectedWine.price;
-          updateBasketDisplay();
-      }
-  }
+    function fetchAndPopulateWines() {
+        fetch("http://localhost:8080/wines")
+            .then(response => response.json())
+            .then(data => {
+                wines = data;
+                const selectElement = document.getElementById("drink");
+                selectElement.innerHTML = "";
 
-  // Update basket display
-  function updateBasketDisplay() {
-      const basketElement = document.getElementById("basket");
-      const basketItems = Object.values(basket);
-      const totalItems = basketItems.reduce((sum, item) => sum + item.quantity, 0);
-      basketElement.textContent = `Basket : ${totalItems}, Total price: $${totalPrice.toFixed(2)}`;
-  }
+                data.forEach(wine => {
+                    const option = document.createElement("option");
+                    option.value = wine.name;
+                    option.textContent = `${wine.name} - $${wine.price}`;
+                    selectElement.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching wines:", error));
+    }
 
- 
-  
-  // I still need to add the add to basket function!!!!
-  const checkoutButton = document.createElement('button');
-  checkoutButton.id = 'btnCheckout';
-  checkoutButton.innerText = 'Go to checkout';
-  document.body.appendChild(checkoutButton);
+    function fetchAndPopulateLiquors() {
+        fetch("http://localhost:8090/api/liquor-names")
+            .then(response => response.json())
+            .then(data => {
 
-  checkoutButton.addEventListener('click', () => {
-	Object.values(basket).forEach(wine => {
-		let individaulWine = `${wine.quantity} ${wine.name}, `;
-	    
-		basketWines.push(individaulWine);
-	});
-fetchData(token);
-    displayCheckoutPage();
-  });
+                if (!Array.isArray(data)) {
+                    throw new Error("Expected an array of liquor strings");
+                }
 
-  // Re-setup the logout button event handler
-  //const logoutButton = document.createElement('button');
-  //logoutButton.id = 'btnLogout';
-  //logoutButton.innerText = 'Logout';
-  //document.body.appendChild(logoutButton);
+                liquors = data.map(item => {
+                    const [name, price] = item.split(" - $");
+                    return { name: name.trim(), price: parseFloat(price.trim()) };
+                });
 
-  //logoutButton.addEventListener('click', () => {
-  //  getAuth().signOut().catch(err => console.error('Error signing out:', err));
-  //  location.reload(); // Refresh the page to show the login form again
-  //});
+                const selectElement = document.getElementById("liquor");
+                selectElement.innerHTML = "";
+
+                liquors.forEach(liquor => {
+                    const option = document.createElement("option");
+                    option.value = liquor.name;
+                    option.textContent = `${liquor.name} - $${liquor.price.toFixed(2)}`;
+                    selectElement.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching liquors:", error));
+    }
+
+
+    function addToBasket(type) {
+        const selectElement = document.getElementById(type === 'wine' ? 'drink' : 'liquor');
+        const selectedName = selectElement.value;
+        const selectedItem = type === 'wine' ? wines.find(wine => wine.name === selectedName) : liquors.find(liquor => liquor.name === selectedName);
+
+        if (selectedItem) {
+            if (basket[selectedName]) {
+                basket[selectedName].quantity += 1;
+            } else {
+                basket[selectedName] = { ...selectedItem, quantity: 1 };
+            }
+
+            totalPrice += selectedItem.price;
+            updateBasketDisplay();
+        }
+    }
+
+    function updateBasketDisplay() {
+        const basketElement = document.getElementById("basket");
+        const basketItems = Object.values(basket);
+        const totalItems = basketItems.reduce((sum, item) => sum + item.quantity, 0);
+        basketElement.textContent = `Basket: ${totalItems}, Total price: $${totalPrice.toFixed(2)}`;
+    }
+
+    const checkoutButton = document.createElement('button');
+    checkoutButton.id = 'btnCheckout';
+    checkoutButton.innerText = 'Go to checkout';
+    document.body.appendChild(checkoutButton);
+
+
+    checkoutButton.addEventListener('click', async () => {
+        let basketWines = [];
+        let basketLiquors = [];
+        let totalPrice = 0;
+
+        Object.values(basket).forEach(item => {
+            let individualItem = { name: item.name, quantity: item.quantity, price: item.price };
+            if (wines.find(wine => wine.name === item.name)) {
+                basketWines.push(individualItem);
+            } else if (liquors.find(liquor => liquor.name === item.name)) {
+                basketLiquors.push(individualItem);
+            }
+            totalPrice += item.price * item.quantity;
+        });
+
+        const orderDetails = {
+            basketWines,
+            basketLiquors,
+            totalPrice
+        };
+
+        try {
+            console.log("TESTINGGGG");
+            await confirmOrder(orderDetails);
+
+            displayCheckoutPage(orderDetails);
+
+        } catch (error) {
+            alert('Order confirmation failed: ' + error.message);
+            displayOrderPage();
+        }
+    });
+}
+function saveOrderToFirestore(orderDetails) {
+    const db = getFirestore();  // Assuming you already have a reference to Firestore
+
+    // Generate a unique order ID
+    const orderId = orderDetails.orderNumber; // Implement this function to generate a unique ID
+
+    const orderRef = doc(db, 'orders', orderId);
+
+    setDoc(orderRef, orderDetails)
+        .then(() => {
+            console.log('Order saved successfully to Firestore');
+        })
+        .catch((error) => {
+            console.error('Error saving order to Firestore:', error);
+        });
 }
 
+async function displayCheckoutPage(orderDetails) {
+    // Clear the existing content
+    document.body.innerHTML = '';
 
+    // Load new CSS file
+    const newStylesheet = document.createElement('link');
+    newStylesheet.rel = 'stylesheet';
+    newStylesheet.href = '../cssFiles/Checkout_page.css';
+    document.head.appendChild(newStylesheet);
 
-
-function displayCheckoutPage() {
-  // Clear the existing content
-  document.body.innerHTML = '';
-  // Load new CSS file
-  const newStylesheet = document.createElement('link');
-  newStylesheet.rel = 'stylesheet';
-  newStylesheet.href = '../cssFiles/Checkout_page.css';
-  document.head.appendChild(newStylesheet);
-
-
-
-// Create new content
-  const newHeader = document.createElement('header');
-  newHeader.className = 'site-header';
-  newHeader.innerHTML = `
+    // Create new content
+    const newHeader = document.createElement('header');
+    newHeader.className = 'site-header';
+    newHeader.innerHTML = `
     <h1>Bam <u>Booz</u>led</h1>
   `;
-  document.body.appendChild(newHeader);
+    document.body.appendChild(newHeader);
 
-  const checkoutContent = document.createElement('div');
-  checkoutContent.innerHTML = `
+    const checkoutContent = document.createElement('div');
+    checkoutContent.innerHTML = `
     <h1>Checkout</h1>
     <p id="basket"></p>
     <p id="total"></p>
     <form onsubmit="event.preventDefault(); pay();">
-        <label for="cardNumber">Card Number:</label>
-        <input type="text" id="cardNumber" name="cardNumber">
-            <br>
-        <label for="expiryDate">Expiry Date:</label>
-        <input type="text" id="expiryDate" name="expiryDate">
-            <br>
-        <label for="cvv">CVV:</label>
-        <input type="text" id="cvv" name="cvv">
-      
+      <label for="cardNumber">Card Number:</label>
+      <input type="text" id="cardNumber" name="cardNumber">
+      <br>
+      <label for="expiryDate">Expiry Date:</label>
+      <input type="text" id="expiryDate" name="expiryDate">
+      <br>
+      <label for="cvv">CVV:</label>
+      <input type="text" id="cvv" name="cvv">
     </form>
+    <button id="confirmButton">Confirm Order</button>
   `;
-  document.body.appendChild(checkoutContent);
-  // I still need to add the add to basket function!!!!
+    document.body.appendChild(checkoutContent);
 
-  const confirmationButton = document.createElement('button');
-  confirmationButton.id = 'btnCheckout';
-  confirmationButton.innerText = "Go to checkout";
-  document.body.appendChild(confirmationButton);
-  confirmationButton.addEventListener('click', () => {
-    ///////PAYMENT CHECK / ORDERING INFO NEEDS TO BE SENT (PAYMENT FUNCTION STILL NEEDS TO BE INTEGRATED)!!!!
-	
-    displayConfirmationPage();
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.addEventListener('click', async () => {
+        try {
+            //await confirmOrder(orderDetails);
+            displayConfirmationPage(orderDetails.basketWines, orderDetails.basketLiquors, orderDetails.totalPrice);
+        } catch (error) {
+            alert('Order confirmation failed: ' + error.message);
+            basketWines = [];
+            basketLiquors = [];
+            basket = {};
+            totalPrice = 0;
+            displayOrderPage();
+        }
+    });
 
-  });
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
 
-  // Re-setup the logout button event handler
-  const logoutButton = document.createElement('button');
-  logoutButton.id = 'btnLogout';
-  logoutButton.innerText = 'Logout';
-  document.body.appendChild(logoutButton);
-
-  logoutButton.addEventListener('click', () => {
-    getAuth().signOut().catch(err => console.error('Error signing out:', err));
-    location.reload(); // Refresh the page to show the login form again
-  });
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
+    });
 }
 
-function displayConfirmationPage() {
-  // Clear the existing content
-  document.body.innerHTML = '';
 
-  // Load new CSS file
-  const confirmationStyleSheet = document.createElement('link');
-  confirmationStyleSheet.rel = 'stylesheet';
-  confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
-  document.head.appendChild(confirmationStyleSheet);
 
-  // Create new content
-  const confirmationContent = document.createElement('div');
-  confirmationContent.innerHTML = `
-    <header class="site-header">
-      <h1>Bam <u>Booz</u>led</h1>
-    </header>
-    <div class="confirmation-container">
-      <div class="checkmark">✓</div>
-      <div class="message">
-        <p>Your delivery is being processed, and you will get a confirmation mail shortly.</p>
-      </div>
-      <div class="details">
-        <h3>Delivery details</h3>
-        <p id="orderNumber">Your order number:</p>
-        
-        <p id="wine">Wine:</p>
-        
-        <p id="totalPrice">Total price:</p>
-      </div>
-      <div class="details">
-        <h3>Delivery info</h3>
-        <p id="expectedDeliveryDate">Expected delivery date:</p>
-        <p id="deliveredBy">Delivered by:</p>
-        <p id="contactDetail">Contact Detail:</p>
-        <p id="phoneNumber">PhoneNumber :</p>
-        <p id="email">Email :</p>
-      </div>
-      <div class="options">
-        <a href="mailto:koenraad.goddefroy@hotmail.com">Cancel order</a>
-      </div>
+function checkInventory(orderDetails) {
+    const { basketWines, basketLiquors } = orderDetails;
+
+    return new Promise((resolve, reject) => {
+        for (const wine of basketWines) {
+            const remainingStock = getRemainingStock(wine.name);
+            if (remainingStock < wine.quantity) {
+                reject(new Error(`Insufficient stock for ${wine.name}.`));
+                return; // Early exit if an item is missing
+            }
+        }
+
+        for (const liquor of basketLiquors) {
+            const remainingStock = getRemainingStock(liquor.name);
+            if (remainingStock < liquor.quantity) {
+                reject(new Error(`Insufficient stock for ${liquor.name}.`));
+                return; // Early exit if an item is missing
+            }
+        }
+
+        resolve(true); // All items have sufficient stock
+    });
+}
+
+function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
+    // Clear the existing content
+    document.body.innerHTML = '';
+
+    // Load new CSS file
+    const confirmationStyleSheet = document.createElement('link');
+    confirmationStyleSheet.rel = 'stylesheet';
+    confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
+    document.head.appendChild(confirmationStyleSheet);
+
+    // Create new content
+    const confirmationContent = document.createElement('div');
+    confirmationContent.innerHTML = `
+  <header class="site-header">
+    <h1>Bam <u>Booz</u>led</h1>
+  </header>
+  <div class="confirmation-container">
+    <div class="checkmark">✓</div>
+    <div class="message">
+      <p>Your delivery is being processed, and you will get a confirmation mail shortly.</p>
     </div>
+    <div class="details">
+      <h3>Delivery details</h3>
+      <p id="orderNumber">Your order number:</p>
+      <p id="wineDetails">Wine:</p>
+      <p id="liquorDetails">Liquor:</p>
+      <p id="totalPrice">Total price:</p>
+    </div>
+    <div class="details">
+      <h3>Delivery info</h3>
+      <p id="expectedDeliveryDate">Expected delivery date:</p>
+      <p id="deliveredBy">Delivered by:</p>
+      <p id="contactDetail">Contact Detail:</p>
+      <p id="phoneNumber">PhoneNumber :</p>
+      <p id="email">Email :</p>
+    </div>
+    <div class="options">
+      <a href="mailto:koenraad.goddefroy@hotmail.com">Cancel order</a>
+    </div>
+  </div>
   `;
-  document.body.appendChild(confirmationContent);
+    document.body.appendChild(confirmationContent);
 
-  // Populate the fields with data from globalData
-  if (globalData) {
-    const data = JSON.parse(globalData); // Assuming globalData is a JSON string
-	let wineDisplayText = "";
-	    Object.values(basket).forEach(wine => {
-	        wineDisplayText += `${wine.quantity} ${wine.name}, `;
-		
-	    });
-    document.getElementById('orderNumber').innerText = `Your order number: 01`; // Here still update to actual order number (Should be from database but can know be done in the webclient itself)
-    document.getElementById('wine').innerText = `Wine: ${wineDisplayText}`;
-    document.getElementById('totalPrice').innerText = `Delivery price: ${data.totalPrice+totalPrice}`;
-    document.getElementById('expectedDeliveryDate').innerText = `Expected delivery date: ${data.deliveryDate}`;
-    document.getElementById('deliveredBy').innerText = `Delivered by: ${data.deliveryPerson.name}`;
-    document.getElementById('phoneNumber').innerText = `PhoneNumber : ${data.deliveryPerson.phoneNumber}`;
-    document.getElementById('email').innerText = `Email : ${data.deliveryPerson.email}`;
-  }
+    // TESTING
+    let deliveryDate = "To be determined";
+    const deliveryPerson = {
+        name: 'Delivery Service',
+        phoneNumber: '+32123 56 78 90',
+        email: 'delivery@example.com'
+    };
+    let orderNumber = generateOrderNumber();
 
-  // Re-setup the logout button event handler
-  const logoutButton = document.createElement('button');
-  logoutButton.id = 'btnLogout';
-  logoutButton.innerText = 'Logout';
-  document.body.appendChild(logoutButton);
+    // Display order details
+    document.getElementById('orderNumber').innerText = `Your order number: ${orderNumber}`;
+    document.getElementById('totalPrice').innerText = `Total price: $${totalPrice.toFixed(2)}`;
+    document.getElementById('expectedDeliveryDate').innerText = `Expected delivery date: ${deliveryDate}`;
+    document.getElementById('deliveredBy').innerText = `Delivered by: ${deliveryPerson.name}`;
+    document.getElementById('phoneNumber').innerText = `PhoneNumber : ${deliveryPerson.phoneNumber}`;
+    document.getElementById('email').innerText = `Email : ${deliveryPerson.email}`;
 
-  logoutButton.addEventListener('click', () => {
-    getAuth().signOut().catch(err => console.error('Error signing out:', err));
-    location.reload(); // Refresh the page to show the login form again
-  });
-  
-  
-  
+    // Display wine details
+    const wineDetailsElement = document.getElementById('wineDetails');
+    if (basketWines.length > 0) {
+        wineDetailsElement.innerHTML = `<b>Wine:</b>`;
+        wineDetailsElement.appendChild(document.createElement('br'));
+        for (const wine of basketWines) {
+            wineDetailsElement.innerHTML += `- ${wine.name} (Price: $${wine.price.toFixed(2)})<br>`;
+        }
+    } else {
+        wineDetailsElement.innerText = 'No wines in your order.';
+    }
+
+    // Display liquor details
+    const liquorDetailsElement = document.getElementById('liquorDetails');
+    if (basketLiquors.length > 0) {
+        liquorDetailsElement.innerHTML = `<b>Liquor:</b>`;
+        liquorDetailsElement.appendChild(document.createElement('br'));
+        for (const liquor of basketLiquors) {
+            liquorDetailsElement.innerHTML += `- ${liquor.name} (Price: $${liquor.price.toFixed(2)})<br>`;
+        }
+    } else {
+        liquorDetailsElement.innerText = 'No liquors in your order.';
+    }
+    const orderDetails = {
+        orderNumber: orderNumber, // Generate an actual order number
+        wines: basketWines,
+        liquors: basketLiquors,
+        totalPrice: totalPrice,
+        deliveryDate: deliveryDate,
+        deliveryPerson: deliveryPerson,
+    };
 
 
+    saveOrderToFirestore(orderDetails);
+
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
+
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
+    });
 }
+
+function generateOrderNumber() {
+    const timestamp = Date.now().toString(36).toUpperCase(); // Convert to base 36
+    const randomString = Math.random().toString(36).substring(2, 7).toUpperCase(); // Generate random string
+    return `${timestamp}-${randomString}`;
+}
+
+async function confirmOrder(orderDetails) {
+    const user = auth.currentUser;
+    if (!user) {
+        throw new Error('No authenticated user found.');
+    }
+
+    const orderRef = doc(db, 'orders', user.uid + '-' + Date.now()); // Create a unique order ID
+    const inventoryRef = doc(db, 'inventory', 'items'); // Assuming a single document for inventory
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            // Log the start of the transaction
+            console.log('Starting transaction for order confirmation');
+
+            // Get the inventory data
+            const inventoryDoc = await transaction.get(inventoryRef);
+            if (!inventoryDoc.exists()) {
+                throw new Error("Inventory document does not exist!");
+            }
+
+            const inventoryData = inventoryDoc.data();
+            const { basketWines, basketLiquors } = orderDetails;
+
+            // Check and update inventory
+            console.log('Checking and updating inventory');
+            for (let wine of basketWines) {
+                console.log(`Checking wine: ${wine.name}, quantity: ${wine.quantity}`);
+                if (!inventoryData[wine.name] || inventoryData[wine.name].quantity < wine.quantity) {
+                    throw new Error(`Not enough inventory for wine: ${wine.name}`);
+                }
+                inventoryData[wine.name].quantity -= wine.quantity;
+                console.log(`Updated inventory for wine: ${wine.name}, new quantity: ${inventoryData[wine.name].quantity}`);
+            }
+
+            for (let liquor of basketLiquors) {
+                console.log(`Checking liquor: ${liquor.name}, quantity: ${liquor.quantity}`);
+                if (!inventoryData[liquor.name] || inventoryData[liquor.name].quantity < liquor.quantity) {
+                    throw new Error(`Not enough inventory for liquor: ${liquor.name}`);
+                }
+                inventoryData[liquor.name].quantity -= liquor.quantity;
+                console.log(`Updated inventory for liquor: ${liquor.name}, new quantity: ${inventoryData[liquor.name].quantity}`);
+            }
+
+            // Update the inventory in Firestore
+            transaction.set(inventoryRef, inventoryData);
+            console.log('Inventory updated successfully');
+
+            // Simulate successful payment processing (replace with your actual payment logic)
+            console.log('Payment processed successfully');
+
+            // Save the order details in Firestore
+            const newOrder = {
+                userId: user.uid,
+                orderDate: new Date(),
+                items: [...basketWines, ...basketLiquors],
+                totalPrice: orderDetails.totalPrice,
+                status: 'confirmed'
+            };
+            transaction.set(orderRef, newOrder);
+            console.log('Order saved successfully');
+        });
+
+        console.log('Order confirmed successfully');
+        //const { basketWines, basketLiquors, totalPrice } = orderDetails;
+        //displayCheckoutPage(basketWines, basketLiquors, totalPrice);
+    } catch (error) {
+        console.error('Error confirming order:', error.message);
+        throw error; // Re-throw the error to be caught in displayCheckoutPage
+    }
+}
+
+
+
+
 
