@@ -21,6 +21,7 @@ let basketLiquors = [];
 let basket = {};
 let totalPrice = 0;
 let token;
+let isManager = false;
 
 function setupAuth() {
     const firebaseConfig = {
@@ -142,14 +143,14 @@ function setupEventHandlers() {
         signInWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
             .then(() => {
                 console.log("Signed in successfully");
-                displayOrderPage();
+                fetchWhoAmI(token);
+                //////////////////////////
             })
             .catch(error => {
                 console.error("Error signing in:", error.message);
                 alert(error.message);
             });
     });
-
     signUpButton.addEventListener("click", () => {
         createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
             .then(() => console.log("Account created successfully"))
@@ -242,12 +243,33 @@ function fetchWhoAmI(token) {
         })
         .then(data => {
             console.log(data.email, data.role);
+
+            if (data.role === 'manager') {
+                isManager = true;
+                console.log('User is a manager');
+                displayManagerPage();
+                addContent('You have manager access.');
+                // Perform additional actions for managers here
+            }
+            else {
+                displayOrderPage();
+            }
             addContent(`Whoami at rest service: ${data.email} - ${data.role}`);
         })
         .catch(error => {
             console.error("Error fetching /api/whoami:", error);
             addContent(`Error fetching whoami: ${error.message}`);
+            displayOrderPage();
         });
+
+    console.log(isManager);
+//    if (isManager){
+//        displayManagerPage();
+//    }
+//    else {
+//        console.log("not a manager")
+//        displayOrderPage();
+//    }
 }
 
 function displayOrderPage() {
@@ -520,6 +542,36 @@ function checkInventory(orderDetails) {
         resolve(true); // All items have sufficient stock
     });
 }
+function displayManagerPage(){
+    const confirmationStyleSheet = document.createElement('link');
+    confirmationStyleSheet.rel = 'stylesheet';
+    confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
+    document.head.appendChild(confirmationStyleSheet);
+
+    // Clear the existing content
+    document.body.innerHTML = '';
+    // Create new content
+    const confirmationContent = document.createElement('div');
+    confirmationContent.innerHTML = `
+  <header class="site-header">
+    <h1>Bam <u>Booz</u>led</h1>
+  </header>
+  <div class="confirmation-container">
+    <div class="message">
+      <p>Welcome on the manager page</p>
+    </div>
+    <div class="details">
+      <h3>All deliveries</h3>
+      <p id="orderNumber">Delivery 1</p>
+      <p id="wineDetails">Delivery 2:</p>
+      <p id="liquorDetails">Delivery 3:</p>
+      <p id="totalPrice">Total number of deliveries</p>
+    </div>
+  </div>
+  `;
+    document.body.appendChild(confirmationContent);
+}
+
 
 function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
     // Clear the existing content
