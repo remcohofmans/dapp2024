@@ -1,0 +1,125 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://winemenu.io/gt/webservice"
+           targetNamespace="http://winemenu.io/gt/webservice" elementFormDefault="qualified">
+
+    <xs:element name="getWineRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getWineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="wine" type="tns:wine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="getCheapestWineRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCheapestWineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="wine" type="tns:wine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMostExpensiveWineRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMostExpensiveWineResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="wine" type="tns:wine"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOrderRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="order" type="tns:order"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOrderResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="responseText" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getWineCardRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getWineCardResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="wine" type="tns:wine" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="order">
+        <xs:sequence>
+            <xs:element name="orderNumber" type="xs:long"/>
+            <xs:element name="wineName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="specialInstructions" type="xs:string" minOccurs="0"/>
+            <xs:element name="timestamp" type="xs:string"/>
+            <xs:element name="deliveryAddress" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="wine">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="year" type="xs:int"/>
+            <xs:element name="price" type="xs:double"/>
+            <xs:element name="percentage" type="xs:float"/>
+            <xs:element name="tastePallet" type="tns:aroma"/>
+            <xs:element name="quantity" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="aroma">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CITRUS"/>
+            <xs:enumeration value="BLACKBERRY"/>
+            <xs:enumeration value="CHERRY"/>
+            <xs:enumeration value="PASSION_FRUIT"/>
+            <xs:enumeration value="ROSE"/>
+            <xs:enumeration value="JASMINE"/>
+            <xs:enumeration value="VIOLET"/>
+            <xs:enumeration value="ELDERFLOWER"/>
+            <xs:enumeration value="PEPPER"/>
+            <xs:enumeration value="CLOVE"/>
+            <xs:enumeration value="CINNAMON"/>
+            <xs:enumeration value="VANILLA"/>
+            <xs:enumeration value="WET STONE"/>
+            <xs:enumeration value="SLATE"/>
+            <xs:enumeration value="SMOKE"/>
+            <xs:enumeration value="CEDAR"/>
+            <xs:enumeration value = "PLUM"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

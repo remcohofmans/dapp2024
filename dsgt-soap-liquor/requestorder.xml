@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gs="http://liquormenu.io/gt/webservice">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <gs:getOrderRequest>
+            <gs:order>
+                <gs:orderNumber/>
+                <gs:liquorBrand>Eristoff</gs:liquorBrand>
+                <gs:specialInstructions>Special instructions here</gs:specialInstructions>
+                <gs:timestamp/>
+                <gs:deliveryAddress>Andreas Vesaliusstraat 13, 3000 Leuven</gs:deliveryAddress>
+            </gs:order>
+        </gs:getOrderRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
