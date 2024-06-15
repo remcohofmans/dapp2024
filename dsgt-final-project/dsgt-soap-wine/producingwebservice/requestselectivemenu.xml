@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:gs="http://winemenu.io/gt/webservice">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <gs:getWineCardByAromaRequest>
+            <gs:aroma> PLUM </gs:aroma>
+        </gs:getWineCardByAromaRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

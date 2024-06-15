@@ -1,7 +1,0 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                  xmlns:gs="http://liquormenu.io/gt/webservice">
-    <soapenv:Header/>
-    <soapenv:Body>
-        <gs:getCheapestLiquorRequest/>
-    </soapenv:Body>
-</soapenv:Envelope>
