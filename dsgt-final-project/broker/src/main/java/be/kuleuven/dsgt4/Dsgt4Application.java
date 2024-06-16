@@ -13,14 +13,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.HypermediaWebClientConfigurer;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
-
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
@@ -86,6 +89,22 @@ Dsgt4Application {
 		DefaultHttpFirewall firewall = new DefaultHttpFirewall();
 		firewall.setAllowUrlEncodedSlash(true);
 		return firewall;
+	}
+
+	@Bean
+	public Jaxb2Marshaller marshaller() {
+		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		// Package where your ObjectFactory class is located
+		marshaller.setContextPath("io.liquormenu.gt.webservice");
+		return marshaller;
+	}
+
+	@Bean
+	public WebServiceTemplate webServiceTemplate(Jaxb2Marshaller marshaller) {
+		WebServiceTemplate webServiceTemplate = new WebServiceTemplate(marshaller);
+		// Set the default URI of the SOAP service
+		webServiceTemplate.setDefaultUri("http://dappvm.eastus.cloudapp.azure.com:12000/ws");
+		return webServiceTemplate;
 	}
 
 }

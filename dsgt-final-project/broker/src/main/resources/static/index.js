@@ -56,6 +56,8 @@ async function fetchLiquorData() {
     }
 }
 
+
+
 // Function to fetch data from the second URL (wines)
 async function fetchWineData() {
     try {
@@ -575,13 +577,36 @@ async function displayManagerPage() {
 
     // Fetch all orders from the API
     try {
-        const response = await fetch('/api/getAllOrders');
+        const response = await fetch('/api/getAllOrders', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        // Check if the response is OK (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const orders = await response.json();
+        console.log('Orders:', orders); // Log the response to check its structure
+
+        // Validate the response structure
+        if (!Array.isArray(orders)) {
+            throw new Error('Invalid data format: expected an array');
+        }
 
         const ordersContainer = document.getElementById('orders');
         ordersContainer.innerHTML = '';
 
         orders.forEach((order, index) => {
+            // Validate order structure
+            if (!order.orderId || !order.customer || !order.items || !order.deliveryInfo) {
+                console.error('Invalid order format:', order);
+                return;
+            }
+
             const orderDiv = document.createElement('div');
             orderDiv.classList.add('order');
             orderDiv.innerHTML = `
@@ -636,7 +661,6 @@ async function displayManagerPage() {
         console.error('Error fetching orders:', error);
     }
 }
-
 
 function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
     // Clear the existing content

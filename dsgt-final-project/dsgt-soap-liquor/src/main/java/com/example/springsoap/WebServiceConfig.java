@@ -50,7 +50,15 @@ public class WebServiceConfig extends WsConfigurerAdapter {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:9090")
                         .allowedMethods("GET");
+
+                registry.addMapping("/ws/**")
+                        .allowedOrigins("http://localhost:9090")
+                        .allowedMethods("GET", "POST")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .exposedHeaders("Access-Control-Allow-Origin");
             }
         };
     }
+
 }
