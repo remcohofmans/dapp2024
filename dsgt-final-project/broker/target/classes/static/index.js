@@ -154,7 +154,10 @@ function setupEventHandlers() {
     });
     signUpButton.addEventListener("click", () => {
         createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
-            .then(() => console.log("Account created successfully"))
+            .then(() => {
+                console.log("Account created successfully");
+                displaySignedUpPage();
+            })
             .catch(error => {
                 console.error("Error creating account:", error.message);
                 alert(error.message);
@@ -676,6 +679,45 @@ async function displayManagerPage() {
         console.error('Error fetching orders:', error);
     }
 }
+function displaySignedUpPage() {
+    const SignUpPageStyleSheet = document.createElement('link');
+    SignUpPageStyleSheet.rel = 'stylesheet';
+    SignUpPageStyleSheet.href = '../cssFiles/SignUp_page.css';
+    document.head.appendChild(SignUpPageStyleSheet);
+
+    // Clear the existing content
+    document.body.innerHTML = '';
+
+    // Create new content
+    const signupContent = document.createElement('div');
+    signupContent.innerHTML = `
+        <header class="site-header">
+            <h1>Bam <u>Booz</u>led</h1>
+        </header>
+        <div class="confirmation-container">
+            <div class="message">
+                <p>Thanks for using our service</p>
+                <p>You can know log in and start ordering your drinks</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(signupContent);
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
+
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
+    });
+    console.log("New user is registered");
+}
+
+
+
+
+
 function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
     // Clear the existing content
     document.body.innerHTML = '';
@@ -865,8 +907,3 @@ async function confirmOrder(orderDetails) {
         throw error; // Re-throw the error to be caught in displayCheckoutPage
     }
 }
-
-
-
-
-
