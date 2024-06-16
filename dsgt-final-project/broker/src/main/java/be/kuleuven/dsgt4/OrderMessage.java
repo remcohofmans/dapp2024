@@ -1,6 +1,5 @@
 package be.kuleuven.dsgt4;
 
-import com.google.cloud.firestore.annotation.PropertyName;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.io.Serializable;
@@ -15,10 +14,6 @@ public class OrderMessage implements Serializable {
     private List<String> items;
     private DeliveryInfo deliveryInfo;
 
-    // No-argument constructor
-    public OrderMessage() {
-    }
-
     public OrderMessage(UUID orderId, LocalDateTime orderTime, String customer, List<String> items, DeliveryInfo deliveryInfo) {
         this.orderId = orderId;
         this.orderTime = orderTime;
@@ -31,58 +26,26 @@ public class OrderMessage implements Serializable {
         return this.orderId;
     }
 
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
+    public LocalDateTime getOrderTime() {
+        return this.orderTime;
     }
-
-    @PropertyName("orderTime")
-    public String getOrderTimeString() {
-        return this.orderTime != null ? this.orderTime.format(DateTimeFormatter.ISO_DATE_TIME) : null;
-    }
-
-    @PropertyName("orderTime")
-    public void setOrderTimeString(String orderTimeString) {
-        this.orderTime = orderTimeString != null ? LocalDateTime.parse(orderTimeString, DateTimeFormatter.ISO_DATE_TIME) : null;
-    }
-
-    // Removed default getter for orderTime
-    // public LocalDateTime getOrderTime() {
-    //     return this.orderTime;
-    // }
-
-    // Removed default setter for orderTime
-    // public void setOrderTime(LocalDateTime orderTime) {
-    //     this.orderTime = orderTime;
-    // }
 
     public String getCustomer() {
         return this.customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
     }
 
     public List<String> getItems() {
         return this.items;
     }
 
-    public void setItems(List<String> items) {
-        this.items = items;
-    }
-
     public DeliveryInfo getDeliveryInfo() {
         return this.deliveryInfo;
-    }
-
-    public void setDeliveryInfo(DeliveryInfo deliveryInfo) {
-        this.deliveryInfo = deliveryInfo;
     }
 
     public Map<String, Object> toDoc() {
         Map<String, Object> data = new HashMap<>();
         data.put("orderId", this.orderId.toString());
-        data.put("orderTime", this.getOrderTimeString());
+        data.put("orderTime", this.orderTime.format(DateTimeFormatter.ISO_DATE_TIME));
         data.put("customer", this.customer);
         data.put("items", this.items);
         data.put("deliveryInfo", this.deliveryInfo.toDoc());
@@ -109,10 +72,6 @@ public class OrderMessage implements Serializable {
         private String deliveryTime;
         private String deliveryStatus;
 
-        // No-argument constructor
-        public DeliveryInfo() {
-        }
-
         public DeliveryInfo(String address, String deliveryTime, String deliveryStatus) {
             this.address = address;
             this.deliveryTime = deliveryTime;
@@ -123,28 +82,12 @@ public class OrderMessage implements Serializable {
             return this.address;
         }
 
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        @PropertyName("deliveryTime")
-        public String getDeliveryTimeString() {
+        public String getDeliveryTime() {
             return this.deliveryTime;
         }
 
-        @PropertyName("deliveryTime")
-        public void setDeliveryTimeString(String deliveryTimeString) {
-            this.deliveryTime = deliveryTimeString;
-        }
-
-
-
         public String getDeliveryStatus() {
             return this.deliveryStatus;
-        }
-
-        public void setDeliveryStatus(String deliveryStatus) {
-            this.deliveryStatus = deliveryStatus;
         }
 
         public Map<String, Object> toDoc() {

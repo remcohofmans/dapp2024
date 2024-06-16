@@ -56,8 +56,6 @@ async function fetchLiquorData() {
     }
 }
 
-
-
 // Function to fetch data from the second URL (wines)
 async function fetchWineData() {
     try {
@@ -550,7 +548,7 @@ function checkInventory(orderDetails) {
 async function displayManagerPage() {
     const confirmationStyleSheet = document.createElement('link');
     confirmationStyleSheet.rel = 'stylesheet';
-    confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
+    confirmationStyleSheet.href = '../cssFiles/Manager_page.css';
     document.head.appendChild(confirmationStyleSheet);
 
     // Clear the existing content
@@ -610,19 +608,29 @@ async function displayManagerPage() {
             const orderDiv = document.createElement('div');
             orderDiv.classList.add('order');
             orderDiv.innerHTML = `
-                <p>Delivery ${index + 1}</p>
+                <p><b>Delivery ${index + 1}</b></p>
                 <p>Order ID: ${order.orderId}</p>
                 <p>Customer: ${order.customer}</p>
                 <p>Items: ${order.items.join(', ')}</p>
                 <p>Delivery Address: ${order.deliveryInfo.address}</p>
-                <p>Delivery Time: ${order.deliveryInfo.time}</p>
-                <p>Status: ${order.deliveryInfo.status}</p>
+                <p>Delivery Time: ${order.deliveryInfo.deliveryTime}</p>
+                <p>Status: ${order.deliveryInfo.deliveryStatus}</p>
             `;
             ordersContainer.appendChild(orderDiv);
         });
 
         // Update total number of deliveries
-        document.getElementById('totalDeliveries').textContent = `Total number of deliveries: ${orders.length}`;
+        document.getElementById('totalDeliveries').innerHTML = `Total number of deliveries: <b>${orders.length}</b>`;
+
+        const logoutButton = document.createElement('button');
+        logoutButton.id = 'btnLogout';
+        logoutButton.innerText = 'Logout';
+        document.body.appendChild(logoutButton);
+
+        logoutButton.addEventListener('click', () => {
+            getAuth().signOut().catch(err => console.error('Error signing out:', err));
+            location.reload();
+        });
     } catch (error) {
         // Clear the existing content
         document.body.innerHTML = '';
@@ -661,7 +669,6 @@ async function displayManagerPage() {
         console.error('Error fetching orders:', error);
     }
 }
-
 function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
     // Clear the existing content
     document.body.innerHTML = '';

@@ -19,6 +19,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="responseText" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="order" type="{http://liquormenu.io/gt/webservice}order"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -29,13 +30,16 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "responseText"
+    "responseText",
+    "order"
 })
 @XmlRootElement(name = "getOrderResponse")
 public class GetOrderResponse {
 
     @XmlElement(required = true)
     protected String responseText;
+    @XmlElement(required = true)
+    protected Order order;
 
     /**
      * Gets the value of the responseText property.
@@ -59,6 +63,30 @@ public class GetOrderResponse {
      */
     public void setResponseText(String value) {
         this.responseText = value;
+    }
+
+    /**
+     * Gets the value of the order property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Order }
+     *     
+     */
+    public Order getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets the value of the order property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Order }
+     *     
+     */
+    public void setOrder(Order value) {
+        this.order = value;
     }
 
 }

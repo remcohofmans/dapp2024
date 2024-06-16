@@ -30,59 +30,59 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetWineRequest }
+     * Create an instance of {@link GetLiquorRequest }
      * 
      */
-    public GetWineRequest createGetWineRequest() {
-        return new GetWineRequest();
+    public GetLiquorRequest createGetLiquorRequest() {
+        return new GetLiquorRequest();
     }
 
     /**
-     * Create an instance of {@link GetWineResponse }
+     * Create an instance of {@link GetLiquorResponse }
      * 
      */
-    public GetWineResponse createGetWineResponse() {
-        return new GetWineResponse();
+    public GetLiquorResponse createGetLiquorResponse() {
+        return new GetLiquorResponse();
     }
 
     /**
-     * Create an instance of {@link Wine }
+     * Create an instance of {@link Liquor }
      * 
      */
-    public Wine createWine() {
-        return new Wine();
+    public Liquor createLiquor() {
+        return new Liquor();
     }
 
     /**
-     * Create an instance of {@link GetCheapestWineRequest }
+     * Create an instance of {@link GetCheapestLiquorRequest }
      * 
      */
-    public GetCheapestWineRequest createGetCheapestWineRequest() {
-        return new GetCheapestWineRequest();
+    public GetCheapestLiquorRequest createGetCheapestLiquorRequest() {
+        return new GetCheapestLiquorRequest();
     }
 
     /**
-     * Create an instance of {@link GetCheapestWineResponse }
+     * Create an instance of {@link GetCheapestLiquorResponse }
      * 
      */
-    public GetCheapestWineResponse createGetCheapestWineResponse() {
-        return new GetCheapestWineResponse();
+    public GetCheapestLiquorResponse createGetCheapestLiquorResponse() {
+        return new GetCheapestLiquorResponse();
     }
 
     /**
-     * Create an instance of {@link GetMostExpensiveWineRequest }
+     * Create an instance of {@link GetMostExpensiveLiquorRequest }
      * 
      */
-    public GetMostExpensiveWineRequest createGetMostExpensiveWineRequest() {
-        return new GetMostExpensiveWineRequest();
+    public GetMostExpensiveLiquorRequest createGetMostExpensiveLiquorRequest() {
+        return new GetMostExpensiveLiquorRequest();
     }
 
     /**
-     * Create an instance of {@link GetMostExpensiveWineResponse }
+     * Create an instance of {@link GetMostExpensiveLiquorResponse }
      * 
      */
-    public GetMostExpensiveWineResponse createGetMostExpensiveWineResponse() {
-        return new GetMostExpensiveWineResponse();
+    public GetMostExpensiveLiquorResponse createGetMostExpensiveLiquorResponse() {
+        return new GetMostExpensiveLiquorResponse();
     }
 
     /**
@@ -110,19 +110,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetWineCardRequest }
+     * Create an instance of {@link GetLiquorCardRequest }
      * 
      */
-    public GetWineCardRequest createGetWineCardRequest() {
-        return new GetWineCardRequest();
+    public GetLiquorCardRequest createGetLiquorCardRequest() {
+        return new GetLiquorCardRequest();
     }
 
     /**
-     * Create an instance of {@link GetWineCardResponse }
+     * Create an instance of {@link GetLiquorCardResponse }
      * 
      */
-    public GetWineCardResponse createGetWineCardResponse() {
-        return new GetWineCardResponse();
+    public GetLiquorCardResponse createGetLiquorCardResponse() {
+        return new GetLiquorCardResponse();
     }
 
 }

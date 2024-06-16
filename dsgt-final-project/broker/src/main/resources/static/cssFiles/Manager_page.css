@@ -1,0 +1,106 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Ensure header is at the top */
+    align-items: center;
+    height: 100vh;
+    overflow: auto; /* Make page scrollable */
+}
+
+/* Site header styles */
+.site-header {
+    background-color: slategray;
+    color: #c0392b;
+    text-align: center;
+    padding: 10px 0;
+    width: 100%; /* Ensure the header extends full width */
+    position: fixed; /* Fixed position */
+    top: 0; /* Align to the top of the viewport */
+    left: 0; /* Align to the left of the viewport */
+    z-index: 1000; /* Ensure it's above all other content */
+}
+
+/* Adjust the top padding of the body to account for the fixed header */
+body {
+    padding-top: 60px; /* Adjust this value based on the height of your header */
+}
+
+/* Confirmation container styles */
+.confirmation-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin-top: 20px; /* Ensure there is space below the header */
+}
+
+/* Message styles */
+.message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Details container styles */
+.details {
+    background-color: #f9f9f9;
+    margin: 20px 0;
+    padding: 15px;
+    border-left: 5px solid #4CAF50;
+}
+
+.details h3 {
+    margin: 0;
+    color: #333;
+}
+
+.details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Order styles */
+.order {
+    margin-bottom: 15px;
+}
+
+.order p {
+    margin: 2px 0;
+}
+
+/* Options link styles */
+.options a {
+    text-decoration: none;
+    color: #3498db;
+    display: block;
+    margin: 10px 0;
+}
+
+/* Attribution text styles */
+.attribution {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 12px;
+    color: #999;
+}
+/* Styles for the logout button */
+#btnLogout {
+    background-color: #c0392b; /* Button background color */
+    color: #ffffff; /* Button text color */
+    border: none; /* Remove default border */
+    padding: 10px 20px; /* Padding inside the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 16px; /* Font size */
+    margin-top: 20px; /* Space above the button */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+/* Hover effect for the logout button */
+#btnLogout:hover {
+    background-color: #a83224; /* Darker background color on hover */
+}

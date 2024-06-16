@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="orderNumber" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
- *         &lt;element name="wineName" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="liquorBrand" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="specialInstructions" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="timestamp" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="deliveryAddress" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
@@ -35,7 +35,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "order", propOrder = {
     "orderNumber",
-    "wineName",
+    "liquorBrand",
     "specialInstructions",
     "timestamp",
     "deliveryAddress"
@@ -43,7 +43,7 @@ import jakarta.xml.bind.annotation.XmlType;
 public class Order {
 
     protected long orderNumber;
-    protected List<String> wineName;
+    protected List<String> liquorBrand;
     protected String specialInstructions;
     @XmlElement(required = true)
     protected String timestamp;
@@ -67,18 +67,18 @@ public class Order {
     }
 
     /**
-     * Gets the value of the wineName property.
+     * Gets the value of the liquorBrand property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the Jakarta XML Binding object.
-     * This is why there is not a <CODE>set</CODE> method for the wineName property.
+     * This is why there is not a <CODE>set</CODE> method for the liquorBrand property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getWineName().add(newItem);
+     *    getLiquorBrand().add(newItem);
      * </pre>
      * 
      * 
@@ -88,11 +88,11 @@ public class Order {
      * 
      * 
      */
-    public List<String> getWineName() {
-        if (wineName == null) {
-            wineName = new ArrayList<String>();
+    public List<String> getLiquorBrand() {
+        if (liquorBrand == null) {
+            liquorBrand = new ArrayList<String>();
         }
-        return this.wineName;
+        return this.liquorBrand;
     }
 
     /**

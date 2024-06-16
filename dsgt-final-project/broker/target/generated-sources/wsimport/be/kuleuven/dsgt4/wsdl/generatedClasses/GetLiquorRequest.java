@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="order" type="{http://liquormenu.io/gt/webservice}order"/&gt;
+ *         &lt;element name="brand" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -29,36 +29,36 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "order"
+    "brand"
 })
-@XmlRootElement(name = "getOrderRequest")
-public class GetOrderRequest {
+@XmlRootElement(name = "getLiquorRequest")
+public class GetLiquorRequest {
 
     @XmlElement(required = true)
-    protected Order order;
+    protected String brand;
 
     /**
-     * Gets the value of the order property.
+     * Gets the value of the brand property.
      * 
      * @return
      *     possible object is
-     *     {@link Order }
+     *     {@link String }
      *     
      */
-    public Order getOrder() {
-        return order;
+    public String getBrand() {
+        return brand;
     }
 
     /**
-     * Sets the value of the order property.
+     * Sets the value of the brand property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Order }
+     *     {@link String }
      *     
      */
-    public void setOrder(Order value) {
-        this.order = value;
+    public void setBrand(String value) {
+        this.brand = value;
     }
 
 }

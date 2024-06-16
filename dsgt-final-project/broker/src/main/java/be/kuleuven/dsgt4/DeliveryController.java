@@ -14,10 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 //
@@ -100,7 +97,9 @@ public class DeliveryController {
 		try {
 			QuerySnapshot querySnapshot = db.collection("orderMessage").get().get();
 			for (QueryDocumentSnapshot document : querySnapshot.getDocuments()) {
-				orders.add(document.toObject(OrderMessage.class));
+				Map<String, Object> docData = document.getData();
+				OrderMessage order = OrderMessage.fromDoc(docData);
+				orders.add(order);
 			}
 		} catch (Exception e) {
 			System.err.println("Error retrieving orders: " + e.getMessage());
