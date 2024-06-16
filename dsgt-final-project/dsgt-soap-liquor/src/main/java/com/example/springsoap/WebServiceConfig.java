@@ -14,7 +14,6 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
-
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
@@ -23,7 +22,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(applicationContext);
         servlet.setTransformWsdlLocations(true);
-
         return new ServletRegistrationBean<>(servlet, "/ws/*");
     }
 
@@ -49,16 +47,11 @@ public class WebServiceConfig extends WsConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:9090")
-                        .allowedMethods("GET");
-
-                registry.addMapping("/ws/**")
-                        .allowedOrigins("http://localhost:9090")
-                        .allowedMethods("GET", "POST")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
                         .exposedHeaders("Access-Control-Allow-Origin");
             }
         };
     }
-
 }

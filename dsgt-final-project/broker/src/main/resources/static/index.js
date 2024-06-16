@@ -8,6 +8,7 @@ import {
     signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
 
+
 // Setup authentication, wire up events, and handle auth state changes
 setupAuth();
 setupEventHandlers();
@@ -47,7 +48,7 @@ const { auth, db } = setupAuth();
 // Function to fetch data from the first URL (liquor-info)
 async function fetchLiquorData() {
     try {
-        const response = await fetch("http://localhost:8090/api/liquor-info");
+        const response = await fetch("http://dappvm.eastus.cloudapp.azure.com:12000/api/liquor-info");
         const data = await response.json();
         return data; // Return the fetched data
     } catch (error) {
@@ -55,6 +56,7 @@ async function fetchLiquorData() {
         throw error; // Throw error to handle it outside
     }
 }
+
 
 // Function to fetch data from the second URL (wines)
 async function fetchWineData() {
@@ -276,10 +278,6 @@ function fetchWhoAmI(token) {
 }
 
 function displayOrderPage() {
-    basketWines = [];
-    basketLiquors = [];
-    basket = {};
-    totalPrice = 0;
     // Clear the existing content
     document.body.innerHTML = '';
 
@@ -350,49 +348,73 @@ function displayOrderPage() {
     }
 
     function fetchAndPopulateLiquors() {
-        fetch("http://localhost:8090/api/liquor-names")
-            .then(response => response.json())
+        fetch("http://dappvm.eastus.cloudapp.azure.com:12000/api/liquor-info")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
             .then(data => {
-
                 if (!Array.isArray(data)) {
-                    throw new Error("Expected an array of liquor strings");
+                    throw new Error("Expected an array of liquor objects");
                 }
 
-                liquors = data.map(item => {
-                    const [name, price] = item.split(" - $");
-                    return { name: name.trim(), price: parseFloat(price.trim()) };
-                });
-
+                liquors = data; // Store liquors globally
+                console.log("LIQUORS: ", liquors)
                 const selectElement = document.getElementById("liquor");
                 selectElement.innerHTML = "";
 
-                liquors.forEach(liquor => {
+                data.forEach(item => {
                     const option = document.createElement("option");
-                    option.value = liquor.name;
-                    option.textContent = `${liquor.name} - $${liquor.price.toFixed(2)}`;
+                    option.value = item.brand;
+                    option.textContent = `${item.brand} - $${item.price}`;
                     selectElement.appendChild(option);
                 });
             })
-            .catch(error => console.error("Error fetching liquors:", error));
+            .catch(error => {
+                console.error("Error fetching or parsing liquors:", error);
+            });
     }
+
 
 
     function addToBasket(type) {
         const selectElement = document.getElementById(type === 'wine' ? 'drink' : 'liquor');
         const selectedName = selectElement.value;
-        const selectedItem = type === 'wine' ? wines.find(wine => wine.name === selectedName) : liquors.find(liquor => liquor.name === selectedName);
+        let selectedItem;
+        console.log("selected name: ", selectedName);
+
+        if (type === 'wine') {
+            selectedItem = wines.find(wine => wine.name === selectedName);
+        } else {
+            selectedItem = liquors.find(liquor => liquor.brand === selectedName);
+        }
+
+        console.log('Selected Item:', selectedItem);
 
         if (selectedItem) {
-            if (basket[selectedName]) {
-                basket[selectedName].quantity += 1;
+            let itemKey;
+            if (type === 'wine') {
+                itemKey = selectedItem.name; // Use name as the key for basket items
             } else {
-                basket[selectedName] = { ...selectedItem, quantity: 1 };
+                itemKey = selectedItem.brand; // Use brand as the key for basket items
+            }
+
+            if (basket[itemKey]) {
+                basket[itemKey].quantity += 1;
+            } else {
+                basket[itemKey] = { ...selectedItem, quantity: 1 };
             }
 
             totalPrice += selectedItem.price;
             updateBasketDisplay();
+        } else {
+            console.error('Selected item not found:', selectedName);
         }
     }
+
+
 
     function updateBasketDisplay() {
         const basketElement = document.getElementById("basket");
@@ -412,12 +434,17 @@ function displayOrderPage() {
         let basketLiquors = [];
         let totalPrice = 0;
 
+        console.log("basket ", basket);
+
         Object.values(basket).forEach(item => {
-            let individualItem = { name: item.name, quantity: item.quantity, price: item.price };
+            let individualItemWine = { name: item.name, quantity: item.quantity, price: item.price };
+            let individualItemLiquor = { name: item.brand, quantity: item.quantity, price: item.price };
+
+
             if (wines.find(wine => wine.name === item.name)) {
-                basketWines.push(individualItem);
-            } else if (liquors.find(liquor => liquor.name === item.name)) {
-                basketLiquors.push(individualItem);
+                basketWines.push(individualItemWine);
+            } else if (liquors.find(liquor => liquor.brand === item.brand)) {
+                basketLiquors.push(individualItemLiquor);
             }
             totalPrice += item.price * item.quantity;
         });
@@ -440,6 +467,8 @@ function displayOrderPage() {
         }
     });
 }
+
+
 function saveOrderToFirestore(orderDetails) {
     const db = getFirestore();  // Assuming you already have a reference to Firestore
 
@@ -535,9 +564,9 @@ function checkInventory(orderDetails) {
         }
 
         for (const liquor of basketLiquors) {
-            const remainingStock = getRemainingStock(liquor.name);
+            const remainingStock = getRemainingStock(liquor.brand);
             if (remainingStock < liquor.quantity) {
-                reject(new Error(`Insufficient stock for ${liquor.name}.`));
+                reject(new Error(`Insufficient stock for ${liquor.brand}.`));
                 return; // Early exit if an item is missing
             }
         }
@@ -627,13 +656,6 @@ async function displayManagerPage() {
         logoutButton.innerText = 'Logout';
         document.body.appendChild(logoutButton);
 
-        const orderButton = document.createElement('orderButton');
-        orderButton.id = 'orderButton';
-        orderButton.innerText = 'Order';
-        document.body.appendChild(orderButton);
-        orderButton.addEventListener('click', () => {
-            displayOrderPage();
-        });
         logoutButton.addEventListener('click', () => {
             getAuth().signOut().catch(err => console.error('Error signing out:', err));
             location.reload();
@@ -747,8 +769,7 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
              wineDetailsElement.innerHTML = `<b>Wine:</b>`;
              wineDetailsElement.appendChild(document.createElement('br'));
              for (const wine of basketWines) {
-                 wineDetailsElement.innerHTML += `- ${wine.name} (Price: $${wine.price.toFixed(2)})<br>`;
-             }
+                 wineDetailsElement.innerHTML += `- ${wine.name} (Quantity: ${wine.quantity}, Price: $${(wine.price * wine.quantity).toFixed(2)})<br>`;             }
          } else {
              wineDetailsElement.innerText = 'No wines in your order.';
          }
@@ -759,8 +780,7 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
              liquorDetailsElement.innerHTML = `<b>Liquor:</b>`;
              liquorDetailsElement.appendChild(document.createElement('br'));
              for (const liquor of basketLiquors) {
-                 liquorDetailsElement.innerHTML += `- ${liquor.name} (Price: $${liquor.price.toFixed(2)})<br>`;
-             }
+                 liquorDetailsElement.innerHTML += `- ${liquor.name} (Quantity: ${liquor.quantity}, Price: $${(liquor.price * liquor.quantity).toFixed(2)})<br>`;             }
          } else {
              liquorDetailsElement.innerText = 'No liquors in your order.';
          }
