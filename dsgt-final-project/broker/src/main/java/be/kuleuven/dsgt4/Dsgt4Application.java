@@ -91,20 +91,5 @@ Dsgt4Application {
 		return firewall;
 	}
 
-	@Bean
-	public Jaxb2Marshaller marshaller() {
-		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-		// Package where your ObjectFactory class is located
-		marshaller.setContextPath("io.liquormenu.gt.webservice");
-		return marshaller;
-	}
-
-	@Bean
-	public WebServiceTemplate webServiceTemplate(Jaxb2Marshaller marshaller) {
-		WebServiceTemplate webServiceTemplate = new WebServiceTemplate(marshaller);
-		// Set the default URI of the SOAP service
-		webServiceTemplate.setDefaultUri("http://dappvm.eastus.cloudapp.azure.com:12000/ws");
-		return webServiceTemplate;
-	}
 
 }

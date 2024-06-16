@@ -45,62 +45,18 @@ function setupAuth() {
 const { auth, db } = setupAuth();
 
 // Function to fetch data from the first URL (liquor-info)
-// async function fetchLiquorData() {
-//     try {
-//         const response = await fetch("http://localhost:8090/api/liquor-info");
-//         const data = await response.json();
-//         return data; // Return the fetched data
-//     } catch (error) {
-//         console.error("Error fetching liquor data:", error);
-//         throw error; // Throw error to handle it outside
-//     }
-// }
-
 async function fetchLiquorData() {
-    const url = "http://dappvm.eastus.cloudapp.azure.com:12000/ws";
-    const soapRequest = `
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                          xmlns:gs="http://liquormenu.io/gt/webservice">
-            <soapenv:Header/>
-            <soapenv:Body>
-                <gs:getLiquorCardRequest/>
-            </soapenv:Body>
-        </soapenv:Envelope>
-    `;
-
-    const options = {
-        method: "POST",
-        headers: {
-            "Content-Type": "text/xml; charset=utf-8",
-            "SOAPAction": ""
-        },
-        body: soapRequest
-    };
-
     try {
-        const response = await fetch(url, options);
-        const textResponse = await response.text();
-
-        // Parse the XML response
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(textResponse, "application/xml");
-
-        // Extract data from the XML
-        const liquors = Array.from(xmlDoc.getElementsByTagName("gs:liquor")).map(liquor => ({
-            brand: liquor.getElementsByTagName("gs:brand")[0].textContent,
-            price: parseFloat(liquor.getElementsByTagName("gs:price")[0].textContent),
-            alcoholPercentage: parseFloat(liquor.getElementsByTagName("gs:alcoholPercentage")[0].textContent),
-            volume: parseInt(liquor.getElementsByTagName("gs:volume")[0].textContent, 10),
-            quantity: parseInt(liquor.getElementsByTagName("gs:quantity")[0].textContent, 10),
-            type: liquor.getElementsByTagName("gs:type")[0].textContent,
-        }));
-
-        return liquors;
+        const response = await fetch("http://localhost:8090/api/liquor-info");
+        const data = await response.json();
+        return data; // Return the fetched data
     } catch (error) {
         console.error("Error fetching liquor data:", error);
-        throw error;
+        throw error; // Throw error to handle it outside
     }
 }
+
+
 
 // Function to fetch data from the second URL (wines)
 async function fetchWineData() {
