@@ -545,7 +545,7 @@ function checkInventory(orderDetails) {
         resolve(true); // All items have sufficient stock
     });
 }
-function displayManagerPage(){
+async function displayManagerPage() {
     const confirmationStyleSheet = document.createElement('link');
     confirmationStyleSheet.rel = 'stylesheet';
     confirmationStyleSheet.href = '../cssFiles/Confirmation_page.css';
@@ -553,26 +553,88 @@ function displayManagerPage(){
 
     // Clear the existing content
     document.body.innerHTML = '';
+
     // Create new content
     const confirmationContent = document.createElement('div');
     confirmationContent.innerHTML = `
-  <header class="site-header">
-    <h1>Bam <u>Booz</u>led</h1>
-  </header>
-  <div class="confirmation-container">
-    <div class="message">
-      <p>Welcome on the manager page</p>
-    </div>
-    <div class="details">
-      <h3>All deliveries</h3>
-      <p id="orderNumber">Delivery 1</p>
-      <p id="wineDetails">Delivery 2:</p>
-      <p id="liquorDetails">Delivery 3:</p>
-      <p id="totalPrice">Total number of deliveries</p>
-    </div>
-  </div>
-  `;
+        <header class="site-header">
+            <h1>Bam <u>Booz</u>led</h1>
+        </header>
+        <div class="confirmation-container">
+            <div class="message">
+                <p>Welcome to the manager page</p>
+            </div>
+            <div class="details">
+                <h3>All deliveries</h3>
+                <div id="orders"></div>
+                <p id="totalDeliveries">Total number of deliveries: 0</p>
+            </div>
+        </div>
+    `;
     document.body.appendChild(confirmationContent);
+
+    // Fetch all orders from the API
+    try {
+        const response = await fetch('/api/getAllOrders');
+        const orders = await response.json();
+
+        const ordersContainer = document.getElementById('orders');
+        ordersContainer.innerHTML = '';
+
+        orders.forEach((order, index) => {
+            const orderDiv = document.createElement('div');
+            orderDiv.classList.add('order');
+            orderDiv.innerHTML = `
+                <p>Delivery ${index + 1}</p>
+                <p>Order ID: ${order.orderId}</p>
+                <p>Customer: ${order.customer}</p>
+                <p>Items: ${order.items.join(', ')}</p>
+                <p>Delivery Address: ${order.deliveryInfo.address}</p>
+                <p>Delivery Time: ${order.deliveryInfo.time}</p>
+                <p>Status: ${order.deliveryInfo.status}</p>
+            `;
+            ordersContainer.appendChild(orderDiv);
+        });
+
+        // Update total number of deliveries
+        document.getElementById('totalDeliveries').textContent = `Total number of deliveries: ${orders.length}`;
+    } catch (error) {
+        // Clear the existing content
+        document.body.innerHTML = '';
+
+        // Load new CSS file
+        const newStylesheet = document.createElement('link');
+        newStylesheet.rel = 'stylesheet';
+        newStylesheet.href = '../cssFiles/Checkout_page.css';
+        document.head.appendChild(newStylesheet);
+
+        // Create new content
+        const newHeader = document.createElement('header');
+        newHeader.className = 'site-header';
+        newHeader.innerHTML = `
+            <h1>Bam <u>Booz</u>led</h1>
+        `;
+        document.body.appendChild(newHeader);
+
+        const errorContent = document.createElement('div');
+        errorContent.innerHTML = `
+            <h1>Server Error</h1>
+            <p>We are currently unable to contact the server. Please try again later.</p>
+        `;
+        document.body.appendChild(errorContent);
+
+        const logoutButton = document.createElement('button');
+        logoutButton.id = 'btnLogout';
+        logoutButton.innerText = 'Logout';
+        document.body.appendChild(logoutButton);
+
+        logoutButton.addEventListener('click', () => {
+            getAuth().signOut().catch(err => console.error('Error signing out:', err));
+            location.reload();
+        });
+
+        console.error('Error fetching orders:', error);
+    }
 }
 
 

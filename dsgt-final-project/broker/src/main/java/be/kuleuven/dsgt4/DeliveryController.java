@@ -3,6 +3,8 @@ package be.kuleuven.dsgt4;
 import be.kuleuven.dsgt4.auth.WebSecurityConfig;
 
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,14 +47,7 @@ public class DeliveryController {
 
 			String block = webClient.get().uri(
 					"http://dapp.southafricanorth.cloudapp.azure.com:13000/rest/delivery/rest/f1e2d3c4-b5a6-7890-1234-56789abcdef0/overviewOfAlldelivery/8889") // Replace
-																																								// with
-																																								// the
-																																								// actual
-																																								// URL
-																																								// you
-																																								// want
-																																								// to
-																																								// call
+																																				// call
 					.retrieve().bodyToMono(String.class).block();
 			UUID orderId = UUID.randomUUID();
 			LocalDateTime orderTime = LocalDateTime.now();
@@ -97,6 +92,20 @@ public class DeliveryController {
 		this.db.collection("usermessages").document(b.getId().toString()).set(b.toDoc()).get();
 
 		return user;
+	}
+
+	@GetMapping("/api/getAllOrders")
+	public List<OrderMessage> getAllOrders() throws InterruptedException, ExecutionException {
+		List<OrderMessage> orders = new ArrayList<>();
+		try {
+			QuerySnapshot querySnapshot = db.collection("orderMessage").get().get();
+			for (QueryDocumentSnapshot document : querySnapshot.getDocuments()) {
+				orders.add(document.toObject(OrderMessage.class));
+			}
+		} catch (Exception e) {
+			System.err.println("Error retrieving orders: " + e.getMessage());
+		}
+		return orders;
 	}
 
 }
