@@ -627,6 +627,13 @@ async function displayManagerPage() {
         logoutButton.innerText = 'Logout';
         document.body.appendChild(logoutButton);
 
+        const orderButton = document.createElement('orderButton');
+        orderButton.id = 'orderButton';
+        orderButton.innerText = 'Order';
+        document.body.appendChild(orderButton);
+        orderButton.addEventListener('click', () => {
+            displayOrderPage();
+        });
         logoutButton.addEventListener('click', () => {
             getAuth().signOut().catch(err => console.error('Error signing out:', err));
             location.reload();
