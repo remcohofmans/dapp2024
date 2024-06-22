@@ -15,11 +15,14 @@ let globalData;
 
 
 function setupAuth() {
-  const firebaseConfig = location.hostname === "localhost" ? {
-    apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
-    projectId: "demo-distributed-systems-kul",
-  } : {
-    // TODO: for level 2, paste your config here
+  const firebaseConfig = (location.hostname === "localhost" ? {
+      apiKey: "AIzaSyBKeoT9A--aO7W9St_GkAv50u8K38FVpjA",
+      authDomain: "distributed-liquor-store.firebaseapp.com",
+      projectId: "distributed-liquor-store",
+      storageBucket: "distributed-liquor-store.appspot.com",
+      messagingSenderId: "246562931566",
+      appId: "1:246562931566:web:62cf6478eaa7efe0a5b77f"
+  } :
   };
 
   const firebaseApp = initializeApp(firebaseConfig);
@@ -123,8 +126,6 @@ function fetchHello(token) {
       })
       .catch(error => console.error("Error fetching /api/askDelivery:", error));
 }
-
-
 
 function fetchWhoAmI(token) {
   fetch('/api/whoami', {

@@ -25,8 +25,12 @@ let isManager = false;
 
 function setupAuth() {
     const firebaseConfig = {
-        apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
-        projectId: "demo-distributed-systems-kul",
+      apiKey: "AIzaSyBKeoT9A--aO7W9St_GkAv50u8K38FVpjA",
+      authDomain: "distributed-liquor-store.firebaseapp.com",
+      projectId: "distributed-liquor-store",
+      storageBucket: "distributed-liquor-store.appspot.com",
+      messagingSenderId: "246562931566",
+      appId: "1:246562931566:web:62cf6478eaa7efe0a5b77f"
     };
 
     const firebaseApp = initializeApp(firebaseConfig);
@@ -35,7 +39,7 @@ function setupAuth() {
 
     // Connect to emulators if running locally
     if (location.hostname === "localhost") {
-        connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
+        //connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
         connectFirestoreEmulator(db, "localhost", 8084);
     }
 
@@ -128,9 +132,6 @@ async function populateFirestore() {
     }
 }
 populateFirestore();
-
-
-
 
 function setupEventHandlers() {
     const emailInput = document.getElementById("email");
@@ -328,10 +329,10 @@ function displayOrderPage() {
     });
 
     fetchAndPopulateWines();
-    fetchAndPopulateLiquors();
+    //fetchAndPopulateLiquors();
     document.addEventListener("DOMContentLoaded", () => {
         fetchAndPopulateWines();
-        fetchAndPopulateLiquors();
+        //fetchAndPopulateLiquors();
     });
 
     function fetchAndPopulateWines() {
@@ -432,7 +433,6 @@ function displayOrderPage() {
         };
 
         try {
-            console.log("TESTINGGGG");
             await confirmOrder(orderDetails);
 
             displayCheckoutPage(orderDetails);
@@ -522,8 +522,6 @@ async function displayCheckoutPage(orderDetails) {
         location.reload();
     });
 }
-
-
 
 function checkInventory(orderDetails) {
     const { basketWines, basketLiquors } = orderDetails;
@@ -816,9 +814,6 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
          };
          saveOrderToFirestore(orderDetails);
      }
-
-
-
 
     const logoutButton = document.createElement('button');
     logoutButton.id = 'btnLogout';

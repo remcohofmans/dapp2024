@@ -8,7 +8,6 @@ import {
     signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-auth.js";
 
-
 // Setup authentication, wire up events, and handle auth state changes
 setupAuth();
 setupEventHandlers();
@@ -26,8 +25,12 @@ let isManager = false;
 
 function setupAuth() {
     const firebaseConfig = {
-        apiKey: "AIzaSyBoLKKR7OFL2ICE15Lc1-8czPtnbej0jWY",
-        projectId: "demo-distributed-systems-kul",
+      apiKey: "AIzaSyBKeoT9A--aO7W9St_GkAv50u8K38FVpjA",
+      authDomain: "distributed-liquor-store.firebaseapp.com",
+      projectId: "distributed-liquor-store",
+      storageBucket: "distributed-liquor-store.appspot.com",
+      messagingSenderId: "246562931566",
+      appId: "1:246562931566:web:62cf6478eaa7efe0a5b77f"
     };
 
     const firebaseApp = initializeApp(firebaseConfig);
@@ -36,7 +39,7 @@ function setupAuth() {
 
     // Connect to emulators if running locally
     if (location.hostname === "localhost") {
-        connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
+        //connectAuthEmulator(auth, "http://localhost:8082", { disableWarnings: true });
         connectFirestoreEmulator(db, "localhost", 8084);
     }
 
@@ -48,7 +51,7 @@ const { auth, db } = setupAuth();
 // Function to fetch data from the first URL (liquor-info)
 async function fetchLiquorData() {
     try {
-        const response = await fetch("http://dappvm.eastus.cloudapp.azure.com:12000/api/liquor-info");
+        const response = await fetch("http://localhost:8090/api/liquor-info");
         const data = await response.json();
         return data; // Return the fetched data
     } catch (error) {
@@ -56,7 +59,6 @@ async function fetchLiquorData() {
         throw error; // Throw error to handle it outside
     }
 }
-
 
 // Function to fetch data from the second URL (wines)
 async function fetchWineData() {
@@ -131,9 +133,6 @@ async function populateFirestore() {
 }
 populateFirestore();
 
-
-
-
 function setupEventHandlers() {
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -156,7 +155,10 @@ function setupEventHandlers() {
     });
     signUpButton.addEventListener("click", () => {
         createUserWithEmailAndPassword(getAuth(), emailInput.value, passwordInput.value)
-            .then(() => console.log("Account created successfully"))
+            .then(() => {
+                console.log("Account created successfully");
+                displaySignedUpPage();
+            })
             .catch(error => {
                 console.error("Error creating account:", error.message);
                 alert(error.message);
@@ -278,6 +280,10 @@ function fetchWhoAmI(token) {
 }
 
 function displayOrderPage() {
+    basketWines = [];
+    basketLiquors = [];
+    basket = {};
+    totalPrice = 0;
     // Clear the existing content
     document.body.innerHTML = '';
 
@@ -323,10 +329,10 @@ function displayOrderPage() {
     });
 
     fetchAndPopulateWines();
-    fetchAndPopulateLiquors();
+    //fetchAndPopulateLiquors();
     document.addEventListener("DOMContentLoaded", () => {
         fetchAndPopulateWines();
-        fetchAndPopulateLiquors();
+        //fetchAndPopulateLiquors();
     });
 
     function fetchAndPopulateWines() {
@@ -348,73 +354,49 @@ function displayOrderPage() {
     }
 
     function fetchAndPopulateLiquors() {
-        fetch("http://dappvm.eastus.cloudapp.azure.com:12000/api/liquor-info")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
+        fetch("http://localhost:8090/api/liquor-names")
+            .then(response => response.json())
             .then(data => {
+
                 if (!Array.isArray(data)) {
-                    throw new Error("Expected an array of liquor objects");
+                    throw new Error("Expected an array of liquor strings");
                 }
 
-                liquors = data; // Store liquors globally
-                console.log("LIQUORS: ", liquors)
+                liquors = data.map(item => {
+                    const [name, price] = item.split(" - $");
+                    return { name: name.trim(), price: parseFloat(price.trim()) };
+                });
+
                 const selectElement = document.getElementById("liquor");
                 selectElement.innerHTML = "";
 
-                data.forEach(item => {
+                liquors.forEach(liquor => {
                     const option = document.createElement("option");
-                    option.value = item.brand;
-                    option.textContent = `${item.brand} - $${item.price}`;
+                    option.value = liquor.name;
+                    option.textContent = `${liquor.name} - $${liquor.price.toFixed(2)}`;
                     selectElement.appendChild(option);
                 });
             })
-            .catch(error => {
-                console.error("Error fetching or parsing liquors:", error);
-            });
+            .catch(error => console.error("Error fetching liquors:", error));
     }
-
 
 
     function addToBasket(type) {
         const selectElement = document.getElementById(type === 'wine' ? 'drink' : 'liquor');
         const selectedName = selectElement.value;
-        let selectedItem;
-        console.log("selected name: ", selectedName);
-
-        if (type === 'wine') {
-            selectedItem = wines.find(wine => wine.name === selectedName);
-        } else {
-            selectedItem = liquors.find(liquor => liquor.brand === selectedName);
-        }
-
-        console.log('Selected Item:', selectedItem);
+        const selectedItem = type === 'wine' ? wines.find(wine => wine.name === selectedName) : liquors.find(liquor => liquor.name === selectedName);
 
         if (selectedItem) {
-            let itemKey;
-            if (type === 'wine') {
-                itemKey = selectedItem.name; // Use name as the key for basket items
+            if (basket[selectedName]) {
+                basket[selectedName].quantity += 1;
             } else {
-                itemKey = selectedItem.brand; // Use brand as the key for basket items
-            }
-
-            if (basket[itemKey]) {
-                basket[itemKey].quantity += 1;
-            } else {
-                basket[itemKey] = { ...selectedItem, quantity: 1 };
+                basket[selectedName] = { ...selectedItem, quantity: 1 };
             }
 
             totalPrice += selectedItem.price;
             updateBasketDisplay();
-        } else {
-            console.error('Selected item not found:', selectedName);
         }
     }
-
-
 
     function updateBasketDisplay() {
         const basketElement = document.getElementById("basket");
@@ -434,17 +416,12 @@ function displayOrderPage() {
         let basketLiquors = [];
         let totalPrice = 0;
 
-        console.log("basket ", basket);
-
         Object.values(basket).forEach(item => {
-            let individualItemWine = { name: item.name, quantity: item.quantity, price: item.price };
-            let individualItemLiquor = { name: item.brand, quantity: item.quantity, price: item.price };
-
-
+            let individualItem = { name: item.name, quantity: item.quantity, price: item.price };
             if (wines.find(wine => wine.name === item.name)) {
-                basketWines.push(individualItemWine);
-            } else if (liquors.find(liquor => liquor.brand === item.brand)) {
-                basketLiquors.push(individualItemLiquor);
+                basketWines.push(individualItem);
+            } else if (liquors.find(liquor => liquor.name === item.name)) {
+                basketLiquors.push(individualItem);
             }
             totalPrice += item.price * item.quantity;
         });
@@ -456,7 +433,6 @@ function displayOrderPage() {
         };
 
         try {
-            console.log("TESTINGGGG");
             await confirmOrder(orderDetails);
 
             displayCheckoutPage(orderDetails);
@@ -467,8 +443,6 @@ function displayOrderPage() {
         }
     });
 }
-
-
 function saveOrderToFirestore(orderDetails) {
     const db = getFirestore();  // Assuming you already have a reference to Firestore
 
@@ -549,8 +523,6 @@ async function displayCheckoutPage(orderDetails) {
     });
 }
 
-
-
 function checkInventory(orderDetails) {
     const { basketWines, basketLiquors } = orderDetails;
 
@@ -564,9 +536,9 @@ function checkInventory(orderDetails) {
         }
 
         for (const liquor of basketLiquors) {
-            const remainingStock = getRemainingStock(liquor.brand);
+            const remainingStock = getRemainingStock(liquor.name);
             if (remainingStock < liquor.quantity) {
-                reject(new Error(`Insufficient stock for ${liquor.brand}.`));
+                reject(new Error(`Insufficient stock for ${liquor.name}.`));
                 return; // Early exit if an item is missing
             }
         }
@@ -656,6 +628,13 @@ async function displayManagerPage() {
         logoutButton.innerText = 'Logout';
         document.body.appendChild(logoutButton);
 
+        const orderButton = document.createElement('orderButton');
+        orderButton.id = 'orderButton';
+        orderButton.innerText = 'Order';
+        document.body.appendChild(orderButton);
+        orderButton.addEventListener('click', () => {
+            displayOrderPage();
+        });
         logoutButton.addEventListener('click', () => {
             getAuth().signOut().catch(err => console.error('Error signing out:', err));
             location.reload();
@@ -698,6 +677,45 @@ async function displayManagerPage() {
         console.error('Error fetching orders:', error);
     }
 }
+function displaySignedUpPage() {
+    const SignUpPageStyleSheet = document.createElement('link');
+    SignUpPageStyleSheet.rel = 'stylesheet';
+    SignUpPageStyleSheet.href = '../cssFiles/SignUp_page.css';
+    document.head.appendChild(SignUpPageStyleSheet);
+
+    // Clear the existing content
+    document.body.innerHTML = '';
+
+    // Create new content
+    const signupContent = document.createElement('div');
+    signupContent.innerHTML = `
+        <header class="site-header">
+            <h1>Bam <u>Booz</u>led</h1>
+        </header>
+        <div class="confirmation-container">
+            <div class="message">
+                <p>Thanks for using our service</p>
+                <p>You can now log in and start ordering your drinks</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(signupContent);
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
+
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
+    });
+    console.log("New user is registered");
+}
+
+
+
+
+
 function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
     // Clear the existing content
     document.body.innerHTML = '';
@@ -769,7 +787,8 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
              wineDetailsElement.innerHTML = `<b>Wine:</b>`;
              wineDetailsElement.appendChild(document.createElement('br'));
              for (const wine of basketWines) {
-                 wineDetailsElement.innerHTML += `- ${wine.name} (Quantity: ${wine.quantity}, Price: $${(wine.price * wine.quantity).toFixed(2)})<br>`;             }
+                 wineDetailsElement.innerHTML += `- ${wine.name} (Price: $${wine.price.toFixed(2)})<br>`;
+             }
          } else {
              wineDetailsElement.innerText = 'No wines in your order.';
          }
@@ -780,7 +799,8 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
              liquorDetailsElement.innerHTML = `<b>Liquor:</b>`;
              liquorDetailsElement.appendChild(document.createElement('br'));
              for (const liquor of basketLiquors) {
-                 liquorDetailsElement.innerHTML += `- ${liquor.name} (Quantity: ${liquor.quantity}, Price: $${(liquor.price * liquor.quantity).toFixed(2)})<br>`;             }
+                 liquorDetailsElement.innerHTML += `- ${liquor.name} (Price: $${liquor.price.toFixed(2)})<br>`;
+             }
          } else {
              liquorDetailsElement.innerText = 'No liquors in your order.';
          }
@@ -794,9 +814,6 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
          };
          saveOrderToFirestore(orderDetails);
      }
-
-
-
 
     const logoutButton = document.createElement('button');
     logoutButton.id = 'btnLogout';
@@ -885,7 +902,3 @@ async function confirmOrder(orderDetails) {
         throw error; // Re-throw the error to be caught in displayCheckoutPage
     }
 }
-
-
-
-
