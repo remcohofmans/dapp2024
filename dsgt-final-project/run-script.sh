@@ -47,12 +47,12 @@ kill_port 9090
 # Start Firebase emulators
 echo "Starting Firebase emulators..."
 # shellcheck disable=SC2164
-gnome-terminal -- bash -c "cd ~/dapp2024work/dapp2024/dapp2024/dapp2024/dsgt-final-project/broker && firebase emulators:start --project demo-distributed-systems-kul; exec bash"
+gnome-terminal -- bash -c "cd ~/dapp2024work/dapp2024/dapp2024/dapp2024/dapp2024/dsgt-final-project/broker && firebase emulators:start --project demo-distributed-systems-kul; exec bash"
 
 # Open a new terminal and run Maven spring-boot:run for SOAPWine submodule
-gnome-terminal -- bash -c "mvn -f ~/dapp2024work/dapp2024/dapp2024/dapp2024/dsgt-final-project/dsgt-soap-wine/consumingwebservice/pom.xml spring-boot:run; exec bash"
+gnome-terminal -- bash -c "mvn -f ~/dapp2024work/dapp2024/dapp2024/dapp2024/dapp2024/dsgt-final-project/dsgt-soap-wine/consumingwebservice/pom.xml spring-boot:run; exec bash"
 
 # Open a new terminal and run Maven spring-boot:run for Broker submodule
-gnome-terminal -- bash -c "mvn -f ~/dapp2024work/dapp2024/dapp2024/dapp2024/dsgt-final-project/broker/pom.xml spring-boot:run; exec bash"
+gnome-terminal -- bash -c "mvn -f ~/dapp2024work/dapp2024/dapp2024/dapp2024/dapp2024/dsgt-final-project/broker/pom.xml spring-boot:run; exec bash"
 
 echo "Script execution completed."
