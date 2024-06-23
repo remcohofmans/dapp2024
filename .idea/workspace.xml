@@ -5,44 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="446de5e2-b55b-42cd-aaa2-ba4b8f853938" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/report-cloud.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/bin/src/main/resources/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/bin/src/main/resources/static/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/dsgt-soap-liquor/pom.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/firebase-debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/firebase-debug.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/firestore-debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/firestore-debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/pubsub-debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/pubsub-debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/java/be/kuleuven/dsgt4/Dsgt4Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/java/be/kuleuven/dsgt4/auth/SecurityFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Checkout_page.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Confirmation_page.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Login_page.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Order_page.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Order_page_with_server_comm.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Signup_page.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldHTMLFiles/Test.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/Checkout_page.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/Confirmation_page.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/Order_page.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/account.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/beveragePrices.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/beverageTastePallets.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/beverages.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/cart.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/header.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/manager.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/src/main/resources/static/oldJavaScriptFiles/state.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/Dsgt4Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/Dsgt4Application.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/auth/SecurityFilter$FirebaseAuthentication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/auth/SecurityFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/be/kuleuven/dsgt4/auth/SecurityFilter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Checkout_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Confirmation_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Login_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Order_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Order_page_with_server_comm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Signup_page.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldHTMLFiles/Test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/Checkout_page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/Confirmation_page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/Order_page.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/account.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/beveragePrices.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/beverageTastePallets.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/beverages.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/cart.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/header.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/manager.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/classes/static/oldJavaScriptFiles/state.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dsgt-final-project/broker/ui-debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/broker/ui-debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsgt-final-project/dsgt-soap-liquor/src/main/java/com/example/springsoap/LiquorRestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/dsgt-soap-liquor/src/main/java/com/example/springsoap/LiquorRestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/dsgt-soap-wine/consumingwebservice/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/dsgt-soap-wine/consumingwebservice/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsgt-final-project/run-script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/dsgt-final-project/run-script.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
