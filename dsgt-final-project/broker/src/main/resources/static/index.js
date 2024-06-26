@@ -328,6 +328,15 @@ function displayCheckoutPage() {
             alert("There was an error processing your order. Please try again.");
         }
     });
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
+
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
+    });
 }
 
 async function saveOrderToFirestore(orderDetails) {

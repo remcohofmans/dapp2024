@@ -48,6 +48,30 @@ function setupAuth() {
 
 const { auth, db } = setupAuth();
 
+// Function to fetch data from the first URL (liquor-info)
+async function fetchLiquorData() {
+    try {
+        const response = await fetch("http://dappvm.eastus.cloudapp.azure.com:12000/api/liquor-info");
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error("Error fetching liquor data:", error);
+        throw error; // Throw error to handle it outside
+    }
+}
+
+// Function to fetch data from the second URL (wines)
+async function fetchWineData() {
+    try {
+        const response = await fetch("http://localhost:8080/wines");
+        const data = await response.json();
+        return data; // Return the fetched data
+    } catch (error) {
+        console.error("Error fetching wine data:", error);
+        throw error; // Throw error to handle it outside
+    }
+}
+
 // Function to populate Firestore with fetched data
 async function populateFirestore() {
     try {
@@ -436,6 +460,15 @@ function displayOrderPage() {
             alert('Order confirmation failed: ' + error.message);
             displayOrderPage();
         }
+    });
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'btnLogout';
+    logoutButton.innerText = 'Logout';
+    document.body.appendChild(logoutButton);
+
+    logoutButton.addEventListener('click', () => {
+        getAuth().signOut().catch(err => console.error('Error signing out:', err));
+        location.reload();
     });
 }
 
