@@ -247,15 +247,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <packageName>be.kuleuven.dsgt4.wsdl.generatedClasses</packageName>
-                    <wsdlUrls>
-                        <wsdlUrl>http://dappvm.eastus.cloudapp.azure.com:12000/ws/liquors.wsdl</wsdlUrl>
-                    </wsdlUrls>
-                    <sourceDestDir>${sourcesDir}</sourceDestDir>
-                    <destDir>${classesDir}</destDir>
-                    <extension>true</extension>
-                </configuration>
             </plugin>
         </plugins>
     </build>

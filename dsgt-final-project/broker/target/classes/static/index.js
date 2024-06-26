@@ -461,15 +461,6 @@ function displayOrderPage() {
             displayOrderPage();
         }
     });
-    const logoutButton = document.createElement('button');
-    logoutButton.id = 'btnLogout';
-    logoutButton.innerText = 'Logout';
-    document.body.appendChild(logoutButton);
-
-    logoutButton.addEventListener('click', () => {
-        getAuth().signOut().catch(err => console.error('Error signing out:', err));
-        location.reload();
-    });
 }
 
 function saveOrderToFirestore(orderDetails) {
@@ -742,17 +733,9 @@ function displayConfirmationPage(basketWines, basketLiquors, totalPrice) {
   `;
     document.body.appendChild(confirmationContent);
 
-    // TESTING
-    // let deliveryDate = "To be determined";
-    // const deliveryPerson = {
-    //     name: 'Delivery Service',
-    //     phoneNumber: '+32123 56 78 90',
-    //     email: 'delivery@example.com'
-    // };
      let orderNumber = generateOrderNumber();
 
      if(globalData) {
-         console.log("TESTING inside globalData");
          const data = JSON.parse(globalData);
 
          // Display order details
